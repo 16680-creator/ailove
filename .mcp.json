@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "deploy": {
+      "command": "node",
+      "args": ["D:/Code/aiCode/ai-love-daily/deploy/mcp/index.mjs"],
+      "type": "stdio"
+    }
+  }
+}

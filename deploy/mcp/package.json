@@ -1,0 +1,15 @@
+{
+  "name": "ai-love-daily-deploy-mcp",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "MCP server for deploying ai-love-daily backend to remote server",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "ssh2": "^1.16.0",
+    "zod": "^3.24.0"
+  }
+}
