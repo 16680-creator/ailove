@@ -1,0 +1,152 @@
+<view class="page-shell period-page">
+  <view class="page-top">
+    <text class="page-kicker">Cycle Care</text>
+    <text class="page-heading">姨妈助手</text>
+    <text class="page-subtitle">每天打卡记录身体状态，日历一目了然。</text>
+  </view>
+
+  <!-- 顶部状态卡片 -->
+  <view class="status-card card fade-in" wx:if="{{periodInfo}}">
+    <text class="eyebrow">当前状态</text>
+    <text class="status-text">{{periodInfo.currentStatusText || '状态正常'}}</text>
+    <view class="info-grid">
+      <view class="info-item">
+        <text class="info-value">{{periodInfo.avgCycleDays || 28}}</text>
+        <text class="info-label">周期天数</text>
+      </view>
+      <view class="info-item">
+        <text class="info-value">{{periodInfo.daysUntilNext || '--'}}</text>
+        <text class="info-label">距离下次</text>
+      </view>
+      <view class="info-item">
+        <text class="info-value">{{periodInfo.avgPeriodDays || '--'}}</text>
+        <text class="info-label">经期天数</text>
+      </view>
+    </view>
+    <text wx:if="{{periodInfo.nextPredictedDate}}" class="next-date">预计下次 {{periodInfo.nextPredictedDate}}</text>
+  </view>
+
+  <view wx:if="{{!periodInfo}}" class="empty-wrap card">
+    <text class="empty-icon">周</text>
+    <text class="empty-title">还没有记录</text>
+    <text class="empty-text">点击日历中的日期开始打卡吧。</text>
+  </view>
+
+  <!-- 月历 -->
+  <view class="calendar-card card">
+    <view class="cal-header">
+      <view class="cal-nav" data-delta="-1" bindtap="changeMonth">
+        <van-icon name="arrow-left" size="20px"/>
+      </view>
+      <text class="cal-title">{{calYear}}年{{calMonth}}月</text>
+      <view class="cal-nav" data-delta="1" bindtap="changeMonth">
+        <van-icon name="arrow" size="20px"/>
+      </view>
+    </view>
+
+    <view class="cal-weekdays">
+      <text class="cal-weekday" wx:for="{{weekDays}}" wx:key="*this">{{item}}</text>
+    </view>
+
+    <view class="cal-grid">
+      <view class="cal-day {{item.empty ? 'cal-empty' : ''}} {{item.isToday ? 'cal-today' : ''}} {{item.isPeriod ? 'cal-period' : ''}}"
+            wx:for="{{calDays}}" wx:key="index" data-date="{{item.date}}" bindtap="onDayTap">
+        <text class="cal-day-num" wx:if="{{!item.empty}}">{{item.day}}</text>
+        <view class="cal-dot {{item.isPeriod ? 'dot-period' : (item.hasFlow ? 'dot-flow' : '')}}" wx:if="{{!item.empty}}"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 本月统计 -->
+  <view class="stats-card card">
+    <text class="section-title">本月统计</text>
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-value">{{monthPeriodDays}}</text>
+        <text class="stat-label">经期天数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{monthAvgFlow}}</text>
+        <text class="stat-label">平均流量</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史周期 -->
+  <view class="section-card card">
+    <text class="section-title">历史周期</text>
+  </view>
+  <view class="record-list">
+    <view class="record-item card" wx:for="{{records}}" wx:key="id">
+      <view class="record-top">
+        <text class="record-date">{{item.startDate}} ~ {{item.endDate || '进行中'}}</text>
+        <text class="record-duration" wx:if="{{item.periodDays}}">共 {{item.periodDays}} 天</text>
+      </view>
+      <view class="record-meta" wx:if="{{item.cycleDays}}">
+        <text class="record-meta-item">周期 {{item.cycleDays}}天</text>
+      </view>
+    </view>
+    <view wx:if="{{records.length === 0}}" class="empty-records">
+      <text class="empty-text">还没有历史周期记录</text>
+    </view>
+  </view>
+
+  <view class="predict-bar">
+    <van-button type="primary" round size="small" class="btn-gradient" bindtap="generatePredict">生成预测</van-button>
+  </view>
+
+  <view style="height: 120rpx;"></view>
+</view>
+
+<!-- 打卡弹窗 -->
+<van-popup show="{{showCheckinPopup}}" round position="bottom" custom-style="height:70%" bind:close="closeCheckin">
+  <view class="popup-wrap">
+    <view class="popup-header">
+      <view>
+        <text class="popup-title">{{checkinDate}} 打卡</text>
+        <text class="popup-subtitle">记录今天的身体状态</text>
+      </view>
+      <van-icon name="cross" bindtap="closeCheckin"/>
+    </view>
+
+    <!-- 经期开关 -->
+    <view class="checkin-section">
+      <text class="checkin-label">今天是经期吗？</text>
+      <view class="period-toggle {{checkinForm.isPeriod ? 'toggle-on' : ''}}" bindtap="togglePeriod">
+        <text>{{checkinForm.isPeriod ? '是' : '否'}}</text>
+      </view>
+    </view>
+
+    <!-- 流量选择 -->
+    <view class="checkin-section" wx:if="{{checkinForm.isPeriod}}">
+      <text class="checkin-label">流量</text>
+      <view class="option-row">
+        <view class="option-btn {{checkinForm.flowLevel === item.value ? 'option-active' : ''}}"
+              wx:for="{{flowOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="selectFlow">
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 疼痛选择 -->
+    <view class="checkin-section">
+      <text class="checkin-label">疼痛程度</text>
+      <view class="option-row">
+        <view class="option-btn {{checkinForm.painLevel === item.value ? 'option-active' : ''}}"
+              wx:for="{{painOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="selectPain">
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 备注 -->
+    <view class="checkin-section">
+      <text class="checkin-label">备注</text>
+      <textarea class="checkin-textarea" value="{{checkinForm.notes}}" placeholder="今天感觉怎么样？" bindinput="onCheckinNotesInput" maxlength="200"/>
+    </view>
+
+    <van-button type="primary" round block class="btn-gradient mt-20" bindtap="saveDailyLog">保存打卡</van-button>
+  </view>
+</van-popup>
+
+<van-toast id="van-toast"/>

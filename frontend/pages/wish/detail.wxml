@@ -1,0 +1,17 @@
+<view class="page-shell wish-detail-page" wx:if="{{wish}}">
+  <view class="page-top">
+    <text class="page-kicker">Wish Detail</text>
+    <text class="page-heading">{{wish.title}}</text>
+    <text class="page-subtitle">把一个心愿的分类、优先级和完成状态清楚地展开。</text>
+  </view>
+
+  <view class="wish-card card">
+    <text wx:if="{{wish.description}}" class="wish-desc">{{wish.description}}</text>
+    <view class="tags flex">
+      <text class="tag">{{wish.categoryText}}</text>
+      <text class="tag">{{wish.priorityText}}</text>
+      <text class="tag status-tag {{wish.status === 2 ? 'done' : ''}}">{{wish.status === 2 ? '已完成' : '进行中'}}</text>
+    </view>
+    <text wx:if="{{wish.expectedDate}}" class="date-text">期望完成：{{wish.expectedDate}}</text>
+  </view>
+</view>

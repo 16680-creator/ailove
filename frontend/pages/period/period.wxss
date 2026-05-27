@@ -1,0 +1,397 @@
+/* 状态卡片 */
+.status-card {
+  padding: 34rpx;
+}
+
+.status-text,
+.next-date {
+  display: block;
+}
+
+.status-text {
+  margin-top: 22rpx;
+  font-size: 40rpx;
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16rpx;
+  margin-top: 28rpx;
+}
+
+.info-item {
+  padding: 24rpx 18rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 251, 245, 0.86);
+  border: 1rpx solid rgba(187, 119, 91, 0.1);
+  text-align: center;
+}
+
+.info-value,
+.info-label {
+  display: block;
+}
+
+.info-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--accent-deep);
+}
+
+.info-label {
+  margin-top: 10rpx;
+  font-size: 20rpx;
+  color: var(--text-light);
+}
+
+.next-date {
+  margin-top: 24rpx;
+  padding-top: 22rpx;
+  border-top: 1rpx solid rgba(126, 97, 78, 0.1);
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+/* 日历 */
+.calendar-card {
+  padding: 24rpx 20rpx;
+}
+
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10rpx 20rpx;
+}
+
+.cal-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.cal-nav {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 251, 245, 0.86);
+}
+
+.cal-nav-icon {
+  font-size: 28rpx;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding-bottom: 12rpx;
+}
+
+.cal-weekday {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6rpx;
+}
+
+.cal-day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  border-radius: 16rpx;
+  transition: background 0.2s;
+}
+
+.cal-day:active {
+  background: rgba(185, 116, 86, 0.08);
+}
+
+.cal-empty {
+  pointer-events: none;
+}
+
+.cal-today .cal-day-num {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.cal-period {
+  background: rgba(220, 80, 80, 0.1);
+}
+
+.cal-period .cal-day-num {
+  color: #d04040;
+  font-weight: 700;
+}
+
+.cal-day-num {
+  font-size: 26rpx;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.cal-dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  margin-top: 6rpx;
+}
+
+.dot-period {
+  background: #d04040;
+}
+
+.dot-flow {
+  background: var(--accent);
+}
+
+/* 本月统计 */
+.stats-card {
+  padding: 28rpx 30rpx;
+}
+
+.stats-row {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 20rpx;
+}
+
+.stat-item {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 251, 245, 0.86);
+  border: 1rpx solid rgba(187, 119, 91, 0.1);
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--accent-deep);
+}
+
+.stat-label {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 20rpx;
+  color: var(--text-light);
+}
+
+/* 历史记录 */
+.section-card {
+  padding: 28rpx 30rpx;
+}
+
+.section-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.record-list {
+  padding: 0 0 20rpx;
+}
+
+.record-item {
+  padding: 26rpx 30rpx;
+}
+
+.record-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14rpx;
+}
+
+.record-date {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.record-duration {
+  font-size: 22rpx;
+  color: var(--text-light);
+}
+
+.record-meta {
+  margin-top: 10rpx;
+}
+
+.record-meta-item {
+  font-size: 22rpx;
+  color: var(--text-secondary);
+}
+
+.empty-records {
+  padding: 40rpx;
+  text-align: center;
+}
+
+.empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 70rpx 40rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  background: #ead7c9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38rpx;
+  color: var(--accent-deep);
+}
+
+.empty-title,
+.empty-text {
+  display: block;
+}
+
+.empty-title {
+  margin-top: 24rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.empty-text {
+  margin-top: 14rpx;
+  font-size: 25rpx;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.predict-bar {
+  padding: 20rpx 30rpx;
+  display: flex;
+  justify-content: center;
+}
+
+/* 打卡弹窗 */
+.popup-wrap {
+  padding: 34rpx 30rpx;
+}
+
+.popup-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28rpx;
+}
+
+.popup-title,
+.popup-subtitle {
+  display: block;
+}
+
+.popup-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.popup-subtitle {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.checkin-section {
+  margin-bottom: 30rpx;
+}
+
+.checkin-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16rpx;
+}
+
+.period-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
+  background: #e8e0d8;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.period-toggle.toggle-on {
+  background: linear-gradient(135deg, #d08a6a 0%, #b36b50 100%);
+  color: #fff;
+}
+
+.option-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.option-btn {
+  flex: 1;
+  height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  background: rgba(255, 251, 245, 0.86);
+  border: 2rpx solid rgba(187, 119, 91, 0.15);
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.option-btn.option-active {
+  background: rgba(185, 116, 86, 0.12);
+  border-color: var(--accent);
+  color: var(--accent-deep);
+  font-weight: 600;
+}
+
+.checkin-textarea {
+  width: 100%;
+  height: 140rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 16rpx;
+  background: rgba(255, 251, 245, 0.86);
+  border: 1rpx solid rgba(187, 119, 91, 0.15);
+  font-size: 26rpx;
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.mt-20 {
+  margin-top: 20rpx;
+}

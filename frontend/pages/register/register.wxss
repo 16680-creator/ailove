@@ -1,0 +1,23 @@
+.register-page {
+  padding-bottom: 60rpx;
+}
+
+.form-card {
+  padding: 0;
+  overflow: hidden;
+  margin: 0 30rpx;
+}
+
+.btn-group {
+  padding: 40rpx 30rpx 0;
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, #c4826a, #bb775b) !important;
+  border: none !important;
+  color: #fffaf4 !important;
+}
+
+.mt-20 {
+  margin-top: 20rpx;
+}

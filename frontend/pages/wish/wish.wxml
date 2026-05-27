@@ -1,0 +1,85 @@
+<view class="page-shell wish-page">
+  <view class="page-top">
+    <text class="page-kicker">Wish List</text>
+    <text class="page-heading">心愿清单</text>
+    <text class="page-subtitle">把想一起实现的事情，按轻重缓急整理成可翻阅、可勾选的目录。</text>
+  </view>
+
+  <view wx:if="{{wishList.length === 0 && !loading}}" class="empty-wrap card">
+    <text class="empty-icon">愿</text>
+    <text class="empty-title">还没有写下第一个愿望</text>
+    <text class="empty-text">先记一件最想一起完成的小事，清单会慢慢长起来。</text>
+  </view>
+
+  <view class="stats-bar card" wx:if="{{stats}}">
+    <view class="stat-item">
+      <text class="stat-num">{{stats.total || 0}}</text>
+      <text class="stat-label">全部</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.pending || 0}}</text>
+      <text class="stat-label">待完成</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.completed || 0}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+  </view>
+
+  <view class="wish-list">
+    <view class="wish-item card fade-in" wx:for="{{wishList}}" wx:key="id">
+      <view class="wish-main">
+        <view class="wish-info">
+          <view class="check-btn {{item.status === 2 ? 'checked' : ''}}" bindtap="toggleComplete" data-id="{{item.id}}" data-status="{{item.status}}">
+            <text>{{item.status === 2 ? '✓' : ''}}</text>
+          </view>
+          <view class="wish-copy">
+            <text class="wish-title {{item.status === 2 ? 'completed' : ''}}">{{item.title}}</text>
+            <text wx:if="{{item.description}}" class="wish-desc ellipsis-2">{{item.description}}</text>
+            <view class="wish-tags">
+              <text class="tag category-tag">{{item.categoryText}}</text>
+              <text class="tag priority-tag priority-{{item.priority}}">{{item.priorityText}}</text>
+              <text wx:if="{{item.targetDate}}" class="tag date-tag">{{item.targetDate}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-tip">正在整理心愿...</view>
+  <view wx:if="{{!hasMore && wishList.length > 0}}" class="loading-tip">已经到底了</view>
+
+  <view class="fab" bindtap="showAdd"><text class="fab-icon">+</text></view>
+</view>
+
+<van-popup show="{{showAddPopup}}" round position="bottom" custom-style="height:80%" bind:close="closeAdd">
+  <view class="popup-wrap">
+    <view class="popup-header flex-between">
+      <view>
+        <text class="popup-title">写下一个新心愿</text>
+        <text class="popup-subtitle">愿望越具体，完成时就越有仪式感。</text>
+      </view>
+      <van-icon name="cross" bindtap="closeAdd"/>
+    </view>
+    <van-field label="心愿" value="{{addForm.title}}" placeholder="你们想一起实现什么？" bind:input="onTitleInput"/>
+    <van-field label="描述" type="textarea" value="{{addForm.description}}" placeholder="补充一些细节（可选）" autosize bind:input="onDescInput"/>
+    <van-field label="分类" value="{{categoryList[addForm.category-1].label}}" readonly bind:tap="showCategoryPicker" is-link/>
+    <van-field label="期望日期" value="{{addForm.targetDate}}" placeholder="选择期望完成日期" readonly bind:tap="showDatePicker" is-link/>
+    <view class="priority-row">
+      <text class="label">优先级</text>
+      <view class="priority-btns flex">
+        <view class="priority-btn {{addForm.priority === 1 ? 'active-low' : ''}}" bindtap="selectPriority" data-value="1">低</view>
+        <view class="priority-btn {{addForm.priority === 2 ? 'active-mid' : ''}}" bindtap="selectPriority" data-value="2">中</view>
+        <view class="priority-btn {{addForm.priority === 3 ? 'active-high' : ''}}" bindtap="selectPriority" data-value="3">高</view>
+      </view>
+    </view>
+    <van-button type="primary" round block class="btn-gradient mt-20" bindtap="submitWish">添加心愿</van-button>
+  </view>
+</van-popup>
+
+<van-action-sheet show="{{showCategorySheet}}" actions="{{categoryList}}" bind:select="onCategorySelect" bind:close="closeCategorySheet"/>
+<van-popup show="{{showDatePopup}}" round position="bottom" bind:close="closeDatePopup">
+  <van-datetime-picker type="date" value="{{currentDate}}" bind:confirm="onDateConfirm" bind:cancel="closeDatePopup"/>
+</van-popup>
+<van-toast id="van-toast"/>

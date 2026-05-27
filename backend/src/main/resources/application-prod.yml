@@ -1,0 +1,73 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: ai-love-daily
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:ai_love_daily}?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:yexw}
+    password: ${MYSQL_PASSWORD:}
+    hikari:
+      minimum-idle: ${DB_MIN_IDLE:5}
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:20}
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+
+  redis:
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: ${REDIS_DATABASE:0}
+    timeout: 3000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+wx:
+  appid: ${WX_APPID:}
+  secret: ${WX_SECRET:}
+
+jwt:
+  secret: ${JWT_SECRET:aiLoveDailySecretKey2024}
+  expiration: ${JWT_EXPIRATION:2592000}
+
+file:
+  upload:
+    path: ${FILE_UPLOAD_PATH:${user.dir}/data/uploads}
+  access:
+    url: ${FILE_ACCESS_URL:/uploads}
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+
+logging:
+  level:
+    com.ailovedaily: info
+    org.springframework.web: info
+
+ai:
+  enabled: ${AI_ENABLED:false}
+  api-url: ${AI_API_URL:https://api.minimax.chat/v1/chat/completions}
+  api-key: ${AI_API_KEY:}
+  model: ${AI_MODEL:MiniMax-M2.7}
+  timeout: ${AI_TIMEOUT:120000}
+
+knife4j:
+  enable: ${KNIFE4J_ENABLE:false}

@@ -1,0 +1,43 @@
+# IDE
+.idea/
+.vscode/
+.claude/
+.lingma/
+
+# Logs
+.run-logs/
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+package-lock.json
+
+# Build
+*.jar
+*.war
+*.class
+target/
+build/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archives & binaries
+*.zip
+*.tar.gz
+
+# Data (may contain sensitive info)
+data/
+
+# Frontend build artifacts
+frontend/miniprogram_npm/
+
+# Temp files
+~$*

@@ -1,0 +1,24 @@
+<view class="page-shell photos-page">
+  <view class="page-top">
+    <text class="page-kicker">Album Detail</text>
+    <text class="page-heading">{{albumName || '相册'}}</text>
+    <text class="page-subtitle">同一本相册里的照片，会被更干净地排成连续画面。</text>
+  </view>
+
+  <view wx:if="{{photos.length === 0 && !loading}}" class="empty-wrap card">
+    <text class="empty-icon">册</text>
+    <text class="empty-title">这个相册还是空的</text>
+    <text class="empty-text">上传第一张照片，把这一页真正填满。</text>
+    <van-button type="primary" round class="btn-gradient mt-20" bindtap="uploadPhoto">上传照片</van-button>
+  </view>
+
+  <view class="photo-grid">
+    <view class="photo-item" wx:for="{{photos}}" wx:key="id" bindtap="previewPhoto" data-url="{{item.url}}">
+      <image src="{{item.thumbnailUrl || item.url}}" mode="aspectFill" class="photo-img" lazy-load/>
+    </view>
+  </view>
+
+  <view wx:if="{{photos.length > 0}}" class="fab" bindtap="uploadPhoto"><text class="fab-icon">+</text></view>
+  <view wx:if="{{loading}}" class="loading-wrap"><van-loading size="40px" color="#bb775b"/></view>
+</view>
+<van-toast id="van-toast"/>

@@ -1,0 +1,79 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ai-love-daily
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://123.60.31.79:3306/ai_love_daily?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: yexw
+    password: Yxw72707
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+
+  redis:
+    host: 123.60.31.79
+    port: 6379
+    password: "AiLoveDailyRedis!2026#9rV"
+    database: 0
+    timeout: 3000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+wx:
+  appid: wx_test_appid
+  secret: wx_test_secret
+
+jwt:
+  secret: aiLoveDailySecretKey2024
+  expiration: 2592000
+
+file:
+  upload:
+    path: ${FILE_UPLOAD_PATH:${user.dir}/uploads}
+  access:
+    url: /uploads
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+
+logging:
+  level:
+    com.ailovedaily: debug
+    org.springframework.web: info
+
+knife4j:
+  enable: true
+
+ai:
+  enabled: ${AI_ENABLED:true}
+  api-url: ${AI_API_URL:https://api.minimax.chat/v1/text/chatcompletion_v2}
+  api-key: ${AI_API_KEY:sk-cp-yGKGDZqjcLYQrYjpPQj-fUUHcLHv_iox2XbgbwCSDJ6h4PvLVoxwJpwH4T47BsEXsU1eNygBtFg1Q07Og2mvD_kW43_WiLEDpsMv5nSUzxAMGH9DxvvUjn8}
+  model: ${AI_MODEL:MiniMax-M2.7}
+  timeout: ${AI_TIMEOUT:300000}

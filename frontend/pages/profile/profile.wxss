@@ -1,0 +1,148 @@
+.profile-hero {
+  padding: 36rpx;
+}
+
+.profile-main {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-top: 16rpx;
+}
+
+.avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
+  border: 6rpx solid #efe1d2;
+}
+
+.avatar-edit {
+  position: absolute;
+  right: 0;
+  bottom: 4rpx;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: #fffaf4;
+}
+
+.profile-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.nickname,
+.invite-code,
+.profile-note {
+  display: block;
+}
+
+.nickname {
+  font-size: 40rpx;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.invite-code {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: var(--accent);
+}
+
+.profile-note {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.couple-card {
+  padding: 36rpx;
+}
+
+.couple-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.couple-title {
+  margin-top: 20rpx;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.couple-days {
+  display: flex;
+  align-items: baseline;
+  margin-top: 24rpx;
+}
+
+.days-num {
+  font-size: 112rpx;
+  line-height: 0.9;
+  font-weight: 700;
+  color: var(--accent-deep);
+}
+
+.days-unit {
+  margin-left: 10rpx;
+  font-size: 34rpx;
+  color: var(--text-secondary);
+}
+
+.start-date,
+.motto {
+  display: block;
+}
+
+.start-date {
+  margin-top: 18rpx;
+  font-size: 24rpx;
+  color: var(--text-light);
+}
+
+.motto-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 22rpx;
+  padding-top: 22rpx;
+  border-top: 1rpx solid rgba(126, 97, 78, 0.1);
+}
+
+.motto {
+  flex: 1;
+  font-size: 26rpx;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.menu-group {
+  padding: 0;
+  overflow: hidden;
+}
+
+.group-title {
+  display: block;
+  padding: 30rpx 30rpx 14rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.logout-btn {
+  margin-top: 10rpx;
+}

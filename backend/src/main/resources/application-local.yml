@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:./data/ai_love_daily;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-h2.sql
+      data-locations: classpath:data-h2.sql
+      encoding: UTF-8
+      continue-on-error: true
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: 0
+    timeout: 3000ms
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+file:
+  upload:
+    path: ${FILE_UPLOAD_PATH:${user.dir}/uploads}
+  access:
+    url: /uploads
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+ai:
+  enabled: ${AI_ENABLED:true}
+  api-url: ${AI_API_URL:https://api.minimax.chat/v1/text/chatcompletion_v2}
+  api-key: ${AI_API_KEY:sk-cp-yGKGDZqjcLYQrYjpPQj-fUUHcLHv_iox2XbgbwCSDJ6h4PvLVoxwJpwH4T47BsEXsU1eNygBtFg1Q07Og2mvD_kW43_WiLEDpsMv5nSUzxAMGH9DxvvUjn8}
+  model: ${AI_MODEL:MiniMax-M2.7}
+  timeout: ${AI_TIMEOUT:300000}
+
+logging:
+  level:
+    com.ailovedaily: debug
+    org.springframework.jdbc: debug

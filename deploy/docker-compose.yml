@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # MySQL数据库
+  mysql:
+    image: mysql:8.0
+    container_name: ai-love-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: ai_love_daily
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - ai-love-network
+
+  # Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: ai-love-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ai-love-network
+
+  # 后端服务
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: ai-love-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=123456
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - WX_APPID=${WX_APPID}
+      - WX_SECRET=${WX_SECRET}
+      - JWT_SECRET=${JWT_SECRET:-aiLoveDailySecretKey2024}
+      - FILE_UPLOAD_PATH=/app/uploads
+      - FILE_ACCESS_URL=/uploads
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - ai-love-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  uploads_data:
+
+networks:
+  ai-love-network:
+    driver: bridge

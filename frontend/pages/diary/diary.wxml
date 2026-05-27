@@ -1,0 +1,74 @@
+<view class="page-shell diary-page">
+  <view class="page-top">
+    <text class="page-kicker">Daily Stories</text>
+    <text class="page-heading">情侣日记</text>
+    <text class="page-subtitle">把那些会被反复翻看的普通时刻，写成一页页短篇。</text>
+  </view>
+
+  <view wx:if="{{diaryList.length === 0 && !loading}}" class="empty-wrap card">
+    <text class="empty-icon">记</text>
+    <text class="empty-title">还没有第一篇日记</text>
+    <text class="empty-text">从今天开始记，后面再回头看就会有厚度。</text>
+  </view>
+
+  <view class="diary-list">
+    <view class="diary-item card fade-in" wx:for="{{diaryList}}" wx:key="id" bindtap="viewDetail" data-id="{{item.id}}">
+      <view class="item-top">
+        <text class="item-date">{{item.diaryDate}}</text>
+        <text class="mood-tag mood-{{item.mood}}">{{item.moodText}}</text>
+      </view>
+      <view class="item-body">
+        <view class="item-copy">
+          <text class="item-title" wx:if="{{item.title}}">{{item.title}}</text>
+          <text class="item-content ellipsis-2">{{item.content}}</text>
+          <view class="item-footer">
+            <view class="author-info">
+              <image class="avatar rounded-full" src="{{item.userAvatar || '/images/default-avatar.png'}}" mode="aspectFill"/>
+              <text class="author-name">{{item.userName || '我'}}</text>
+            </view>
+            <text wx:if="{{item.isPrivate}}" class="private-tag">私密</text>
+          </view>
+        </view>
+        <image wx:if="{{item.images && item.images.length > 0}}" class="item-cover" src="{{item.images[0]}}" mode="aspectFill"/>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-tip">正在整理日记...</view>
+  <view wx:if="{{!hasMore && diaryList.length > 0}}" class="loading-tip">已经翻到最后一页了</view>
+
+  <view class="fab" bindtap="showAdd">
+    <text class="fab-icon">+</text>
+  </view>
+</view>
+
+<van-popup show="{{showAddPopup}}" round position="bottom" custom-style="height:85%" bind:close="closeAdd">
+  <view class="popup-wrap">
+    <view class="popup-header flex-between">
+      <view>
+        <text class="popup-title">写一篇新日记</text>
+        <text class="popup-subtitle">像编辑杂志一样，留下今天这一页。</text>
+      </view>
+      <van-icon name="cross" bindtap="closeAdd"/>
+    </view>
+    <view class="mood-select">
+      <text class="label">今天的心情</text>
+      <view class="mood-row flex">
+        <view wx:for="{{moodList}}" wx:key="value" class="mood-opt {{addForm.mood === item.value ? 'active' : ''}}" bindtap="selectMood" data-value="{{item.value}}">
+          <text class="mood-emoji">{{item.emoji}}</text>
+          <text class="mood-label">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+    <van-field label="日期" value="{{addForm.diaryDate}}" readonly bind:tap="showDatePicker" is-link/>
+    <van-field label="标题" value="{{addForm.title}}" placeholder="给今天起一个标题（可选）" bind:input="onTitleInput"/>
+    <van-field label="内容" type="textarea" value="{{addForm.content}}" placeholder="写下今天发生的事、说过的话，或者一个小情绪..." autosize rows="5" bind:input="onContentInput"/>
+    <van-button type="primary" round block class="btn-gradient mt-20" bindtap="submitDiary">保存日记</van-button>
+  </view>
+</van-popup>
+
+<van-popup show="{{showDatePopup}}" round position="bottom" bind:close="closeDatePopup">
+  <van-datetime-picker type="date" value="{{currentDate}}" max-date="{{currentDate}}" bind:confirm="onDateConfirm" bind:cancel="closeDatePopup"/>
+</van-popup>
+
+<van-toast id="van-toast"/>

@@ -1,0 +1,47 @@
+.wish-card {
+  padding: 34rpx;
+}
+
+.wish-desc,
+.date-text {
+  display: block;
+}
+
+.wish-desc {
+  font-size: 28rpx;
+  line-height: 1.9;
+  color: var(--text-secondary);
+}
+
+.tags {
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 26rpx;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 42rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: #ecdfd4;
+  color: var(--accent-deep);
+  font-size: 20rpx;
+}
+
+.status-tag {
+  background: #ece8e2;
+  color: var(--text-secondary);
+}
+
+.status-tag.done {
+  background: #e7eee5;
+  color: #5c7154;
+}
+
+.date-text {
+  margin-top: 22rpx;
+  font-size: 24rpx;
+  color: var(--text-light);
+}

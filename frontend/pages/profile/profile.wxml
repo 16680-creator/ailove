@@ -1,0 +1,84 @@
+<view class="page-shell profile-page">
+  <view class="profile-hero card fade-in" wx:if="{{userInfo}}">
+    <text class="page-kicker">Profile</text>
+    <view class="profile-main">
+      <view class="avatar-wrap" bindtap="updateAvatar">
+        <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"/>
+        <view class="avatar-edit">换</view>
+      </view>
+      <view class="profile-copy">
+        <text class="nickname">{{userInfo.nickname || '未设置昵称'}}</text>
+        <text class="invite-code">邀请码 · {{userInfo.inviteCode || '--'}}</text>
+      </view>
+    </view>
+    <van-cell title="编辑资料" is-link bind:click="showEditProfile" custom-style="margin-top: 24rpx;"/>
+  </view>
+
+  <view wx:if="{{coupleInfo}}" class="couple-card card fade-in">
+    <view class="couple-head">
+      <text class="eyebrow">Relationship</text>
+      <text class="couple-title">我们的关系档案</text>
+    </view>
+    <view class="couple-days">
+      <text class="days-num">{{coupleInfo.daysTogether || 0}}</text>
+      <text class="days-unit">天</text>
+    </view>
+    <text class="start-date">恋爱开始于 {{coupleInfo.loveStartDate}}</text>
+    <view class="motto-row" bindtap="showEditMotto">
+      <text class="motto">"{{coupleInfo.loveMotto || '点击编辑爱情宣言'}}"</text>
+      <van-icon name="edit" size="28rpx" color="#bb775b" />
+    </view>
+  </view>
+
+  <view class="menu-group card">
+    <text class="group-title">更多信息</text>
+    <van-cell title="关于我们" icon="info-o" is-link/>
+    <van-cell title="意见反馈" icon="chat-o" is-link/>
+    <van-cell wx:if="{{coupleInfo}}" title="解除绑定" icon="warning-o" is-link bind:click="unbindCouple" value="解除情侣关系"/>
+  </view>
+
+  <van-button type="danger" plain round block class="logout-btn" bindtap="logout">退出登录</van-button>
+</view>
+
+<!-- 编辑资料弹窗 -->
+<van-popup show="{{showEditPopup}}" round position="bottom" custom-style="height: 70%" bind:close="closeEditPopup">
+  <view class="popup-wrap">
+    <view class="popup-header flex-between">
+      <view>
+        <text class="popup-title">编辑资料</text>
+        <text class="popup-subtitle">更新你的个人信息。</text>
+      </view>
+      <van-icon name="cross" bindtap="closeEditPopup"/>
+    </view>
+    <van-field label="昵称" value="{{editForm.nickname}}" placeholder="输入昵称" required bind:input="onNicknameInput"/>
+    <van-field label="性别" value="{{genderActions[editForm.gender].name}}" readonly placeholder="选择性别" is-link bind:tap="showGenderPicker"/>
+    <van-field label="生日" value="{{editForm.birthday}}" readonly placeholder="选择生日" is-link bind:tap="showBirthdayPicker"/>
+    <van-field label="手机号" value="{{editForm.phone}}" placeholder="输入手机号" type="number" bind:input="onPhoneInput"/>
+    <van-button type="primary" round block class="btn-gradient mt-20" bindtap="submitEditProfile">保存</van-button>
+  </view>
+</van-popup>
+
+<!-- 编辑宣言弹窗 -->
+<van-popup show="{{showMottoPopup}}" round position="bottom" custom-style="height: 40%" bind:close="closeMottoPopup">
+  <view class="popup-wrap">
+    <view class="popup-header flex-between">
+      <view>
+        <text class="popup-title">爱情宣言</text>
+        <text class="popup-subtitle">写一句属于你们的话。</text>
+      </view>
+      <van-icon name="cross" bindtap="closeMottoPopup"/>
+    </view>
+    <van-field label="宣言" value="{{mottoText}}" placeholder="写下你们的爱情宣言" type="textarea" autosize bind:input="onMottoInput"/>
+    <van-button type="primary" round block class="btn-gradient mt-20" bindtap="submitMotto">保存</van-button>
+  </view>
+</van-popup>
+
+<!-- 性别选择 -->
+<van-action-sheet show="{{showGenderSheet}}" actions="{{genderActions}}" bind:close="closeGenderSheet" bind:select="onGenderSelect"/>
+
+<!-- 生日选择 -->
+<van-popup show="{{showBirthdayPicker}}" round position="bottom" bind:close="closeBirthdayPicker">
+  <van-datetime-picker type="date" value="{{currentDate}}" max-date="{{currentDate}}" bind:confirm="onBirthdayConfirm" bind:cancel="closeBirthdayPicker"/>
+</van-popup>
+
+<van-toast id="van-toast"/>

@@ -1,0 +1,239 @@
+.wish-list {
+  padding-bottom: 120rpx;
+}
+
+.wish-item {
+  padding: 26rpx 28rpx;
+}
+
+.wish-main,
+.wish-info {
+  display: flex;
+}
+
+.wish-info {
+  flex: 1;
+  gap: 20rpx;
+}
+
+.check-btn {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  border: 2rpx solid rgba(187, 119, 91, 0.46);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fffaf4;
+  font-size: 24rpx;
+  flex-shrink: 0;
+  margin-top: 4rpx;
+}
+
+.check-btn.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.wish-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.wish-title,
+.wish-desc {
+  display: block;
+}
+
+.wish-title {
+  font-size: 32rpx;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.wish-title.completed {
+  text-decoration: line-through;
+  color: var(--text-light);
+}
+
+.wish-desc {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+.wish-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 16rpx;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 40rpx;
+  padding: 0 14rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+}
+
+.category-tag { background: #ecdfd4; color: var(--accent-deep); }
+.priority-1 { background: #e9eee7; color: #5c7154; }
+.priority-2 { background: #f5e7d7; color: #9d6c2d; }
+.priority-3 { background: #f2ddda; color: #a65f58; }
+.date-tag { background: #ece8e2; color: var(--text-secondary); }
+
+.stats-bar {
+  display: flex;
+  padding: 24rpx 20rpx;
+  gap: 8rpx;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-num {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--accent-deep);
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: var(--text-light);
+}
+
+.loading-tip {
+  display: block;
+  text-align: center;
+  padding: 26rpx 0;
+  font-size: 23rpx;
+  color: var(--text-light);
+}
+
+.empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 70rpx 40rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  background: #ead7c9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38rpx;
+  color: var(--accent-deep);
+}
+
+.empty-title,
+.empty-text {
+  display: block;
+}
+
+.empty-title {
+  margin-top: 24rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.empty-text {
+  margin-top: 14rpx;
+  font-size: 25rpx;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.fab {
+  position: fixed;
+  right: 36rpx;
+  bottom: 126rpx;
+  width: 102rpx;
+  height: 102rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d08a6a 0%, #b36b50 100%);
+  box-shadow: 0 18rpx 30rpx rgba(179, 107, 80, 0.26);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+}
+
+.fab-icon {
+  font-size: 52rpx;
+  line-height: 1;
+  color: #fffaf4;
+}
+
+.popup-wrap {
+  padding: 34rpx 30rpx;
+}
+
+.popup-header {
+  align-items: flex-start;
+  margin-bottom: 28rpx;
+}
+
+.popup-title,
+.popup-subtitle {
+  display: block;
+}
+
+.popup-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.popup-subtitle {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.label {
+  display: block;
+  margin-bottom: 16rpx;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+}
+
+.priority-row {
+  padding: 20rpx 30rpx;
+}
+
+.priority-btns {
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.priority-btn {
+  flex: 1;
+  height: 76rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(126, 97, 78, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  background: rgba(255, 251, 245, 0.82);
+}
+
+.active-low { background: #eef2ec; color: #5c7154; border-color: #d5dfd0; }
+.active-mid { background: #f8ecde; color: #9d6c2d; border-color: #ecd8bf; }
+.active-high { background: #f4e2df; color: #a65f58; border-color: #e8c9c4; }

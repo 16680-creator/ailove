@@ -1,0 +1,213 @@
+<view class="page-shell home-page">
+  <view class="home-hero card fade-in">
+    <view class="hero-top">
+      <view class="hero-copy">
+        <text class="page-kicker">Love Archive</text>
+        <text class="hero-title">把平凡日常写成一本温柔杂志</text>
+        <text class="hero-subtitle">在一起的时间、照片、心愿和碎片，都按更舒服的节奏被收进同一本封面里。</text>
+      </view>
+      <view class="hero-stamp" wx:if="{{loveInfo.loveStartDate}}">
+        <text class="stamp-label">始于</text>
+        <text class="stamp-value">{{loveInfo.loveStartDate}}</text>
+      </view>
+    </view>
+
+    <view class="hero-counter">
+      <view class="counter-main">
+        <text class="counter-number">{{loveInfo.daysTogether || 0}}</text>
+        <text class="counter-unit">天</text>
+      </view>
+      <view class="counter-side">
+        <text class="counter-caption">在一起的时间</text>
+        <text class="counter-extra" wx:if="{{loveInfo.nextAnniversaryDays > 0}}">距离下一个纪念日还有 {{loveInfo.nextAnniversaryDays}} 天</text>
+      </view>
+    </view>
+
+    <view class="hero-motto surface-note" wx:if="{{loveInfo.loveMotto}}">
+      <text>“{{loveInfo.loveMotto}}”</text>
+    </view>
+
+    <view class="hero-stats">
+      <view class="stat-block">
+        <text class="stat-label">日记</text>
+        <text class="stat-value">{{quickStats.diaryCount || 0}}</text>
+      </view>
+      <view class="stat-block">
+        <text class="stat-label">照片</text>
+        <text class="stat-value">{{quickStats.photoCount || 0}}</text>
+      </view>
+      <view class="stat-block">
+        <text class="stat-label">心愿</text>
+        <text class="stat-value">{{quickStats.wishCount || 0}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="quote-card card fade-in" style="animation-delay: 0.08s">
+    <view class="quote-top">
+      <view class="quote-label">
+        <text class="eyebrow">今日一句</text>
+        <view wx:if="{{isAiQuote}}" class="ai-badge">
+          <van-icon name="star-o" size="20rpx" color="#fff" />
+          <text>AI</text>
+        </view>
+      </view>
+      <view class="quote-refresh {{refreshing ? 'spin' : ''}}" bindtap="refreshQuote">
+        <van-icon name="replay" size="30rpx" color="#9a7e6d" />
+      </view>
+    </view>
+    <text class="quote-mark">"</text>
+    <text class="quote-text">{{dailyQuote}}</text>
+    <text wx:if="{{isAiQuote}}" class="ai-hint">由大模型根据你们的恋爱故事生成</text>
+  </view>
+
+  <view class="entry-section card fade-in" style="animation-delay: 0.16s">
+    <view class="section-head">
+      <text class="section-title">常用入口</text>
+      <text class="section-note">把高频内容排成固定目录</text>
+    </view>
+    <view class="entry-grid">
+      <view class="entry-item" bindtap="navigateTo" data-url="/pages/menu/menu">
+        <text class="entry-mark">食</text>
+        <text class="entry-name">今天吃什么</text>
+        <text class="entry-meta">{{quickStats.menuCount || 0}} 道可选</text>
+      </view>
+      <view class="entry-item" bindtap="navigateTo" data-url="/pages/diary/diary">
+        <text class="entry-mark">记</text>
+        <text class="entry-name">情侣日记</text>
+        <text class="entry-meta">{{quickStats.diaryCount || 0}} 篇记录</text>
+      </view>
+      <view class="entry-item" bindtap="navigateTo" data-url="/pages/album/album">
+        <text class="entry-mark">册</text>
+        <text class="entry-name">生活相册</text>
+        <text class="entry-meta">{{quickStats.photoCount || 0}} 张照片</text>
+      </view>
+      <view class="entry-item" bindtap="navigateTo" data-url="/pages/wish/wish">
+        <text class="entry-mark">愿</text>
+        <text class="entry-name">心愿清单</text>
+        <text class="entry-meta">{{quickStats.wishCompletedCount || 0}} / {{quickStats.wishCount || 0}} 已完成</text>
+      </view>
+      <view class="entry-item" bindtap="navigateTo" data-url="/pages/trip-plan/trip-plan">
+        <text class="entry-mark">旅</text>
+        <text class="entry-name">旅行规划</text>
+        <text class="entry-meta">AI 生成行程安排</text>
+      </view>
+      <view class="entry-item wide" bindtap="navigateTo" data-url="/pages/period/period">
+        <text class="entry-mark">周</text>
+        <text class="entry-name">姨妈助手</text>
+        <text class="entry-meta">记录周期节奏与提醒</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="story-section card fade-in" style="animation-delay: 0.24s" wx:if="{{recentDiaries.length > 0}}">
+    <view class="section-head">
+      <text class="section-title">最近日记</text>
+      <text class="section-link" bindtap="navigateTo" data-url="/pages/diary/diary">查看全部</text>
+    </view>
+    <view class="story-list">
+      <view class="story-item" wx:for="{{recentDiaries}}" wx:key="id" bindtap="viewDiaryDetail" data-id="{{item.id}}">
+        <view class="story-main">
+          <view class="story-meta">
+            <view class="story-author">
+              <image class="story-avatar" src="{{item.userAvatar || '/images/default-avatar.png'}}" mode="aspectFill" />
+              <text class="story-name">{{item.userNickname || '我们'}}</text>
+            </view>
+            <text class="story-date">{{item.diaryDate}}</text>
+          </view>
+          <text class="story-title">{{item.title || '未命名片段'}}</text>
+          <text class="story-preview ellipsis-2">{{item.content || ''}}</text>
+          <view class="story-foot">
+            <text class="mood-pill mood-{{item.mood}}">{{item.moodText || ''}}</text>
+            <text class="story-count" wx:if="{{item.images && item.images.length > 0}}">{{item.images.length}} 张照片</text>
+          </view>
+        </view>
+        <image wx:if="{{item.images && item.images.length > 0}}" src="{{item.images[0]}}" mode="aspectFill" class="story-cover" />
+      </view>
+    </view>
+  </view>
+
+  <view class="photo-section card fade-in" style="animation-delay: 0.32s" wx:if="{{recentPhotos.length > 0}}">
+    <view class="section-head">
+      <text class="section-title">最近照片</text>
+      <text class="section-link" bindtap="navigateTo" data-url="/pages/album/album">查看全部</text>
+    </view>
+    <view class="photo-grid">
+      <view class="photo-item" wx:for="{{recentPhotos}}" wx:key="id" bindtap="previewPhoto" data-url="{{item.url}}">
+        <image src="{{item.thumbnailUrl || item.url}}" mode="aspectFill" class="photo-img" lazy-load />
+        <view class="photo-caption">
+          <text class="ellipsis">{{item.description || '生活片段'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bind-card card fade-in" wx:if="{{!userInfo.coupleId}}">
+    <text class="eyebrow">关系绑定</text>
+    <text class="bind-title">先完成情侣关系绑定，再把内容一起写进来。</text>
+    <text class="bind-text">创建邀请码或输入对方的邀请码，功能和数据结构都不变，只是现在会更整齐地展示。</text>
+    <van-button type="primary" round class="btn-gradient bind-btn" bindtap="showBindDialog">
+      立即绑定
+    </van-button>
+  </view>
+</view>
+
+<van-popup show="{{showBindPopup}}" round position="bottom" custom-style="height: 46%" bind:close="closeBindPopup">
+  <view class="bind-popup">
+    <view class="popup-heading">
+      <text class="popup-title">绑定情侣关系</text>
+      <text class="popup-subtitle">创建或加入同一本恋爱档案。</text>
+    </view>
+    <van-tabs active="{{activeTab}}" bind:change="onTabChange" color="#bb775b" title-active-color="#34261e" line-width="40">
+      <van-tab title="创建关系">
+        <view class="bind-form">
+          <van-field
+            label="开始日期"
+            value="{{bindForm.loveStartDate}}"
+            placeholder="选择恋爱开始日期"
+            readonly
+            bind:tap="showDatePicker"
+            is-link
+          />
+          <van-field
+            label="爱情宣言"
+            value="{{bindForm.loveMotto}}"
+            placeholder="写一句属于你们的话"
+            type="textarea"
+            autosize
+            bind:input="onMottoInput"
+          />
+          <van-button type="primary" round block class="btn-gradient mt-30" bindtap="createCouple">
+            创建并生成邀请码
+          </van-button>
+        </view>
+      </van-tab>
+      <van-tab title="输入邀请码">
+        <view class="bind-form">
+          <van-field
+            label="邀请码"
+            value="{{inviteCode}}"
+            placeholder="输入对方分享的邀请码"
+            maxlength="6"
+            bind:input="onInviteCodeInput"
+          />
+          <van-button type="primary" round block class="btn-gradient mt-30" bindtap="bindCouple">
+            确认绑定
+          </van-button>
+        </view>
+      </van-tab>
+    </van-tabs>
+  </view>
+</van-popup>
+
+<van-popup show="{{showDatePopup}}" round position="bottom" bind:close="closeDatePopup">
+  <van-datetime-picker
+    type="date"
+    value="{{currentDate}}"
+    max-date="{{maxDate}}"
+    bind:confirm="onDateConfirm"
+    bind:cancel="closeDatePopup"
+  />
+</van-popup>
+
+<van-toast id="van-toast" />

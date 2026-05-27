@@ -1,0 +1,45 @@
+<view class="page-shell album-page">
+  <view class="page-top">
+    <text class="page-kicker">Photo Journal</text>
+    <text class="page-heading">生活相册</text>
+    <text class="page-subtitle">用相册名分栏，把零散照片整理成更像一本本画册的样子。</text>
+  </view>
+
+  <view wx:if="{{albums.length === 0 && !loading}}" class="empty-wrap card">
+    <text class="empty-icon">册</text>
+    <text class="empty-title">还没有创建相册</text>
+    <text class="empty-text">先建一个目录，后面的照片就不会散。</text>
+  </view>
+
+  <view class="album-grid">
+    <view class="album-item" wx:for="{{albums}}" wx:key="id" bindtap="viewPhotos" data-id="{{item.id}}" data-name="{{item.name}}">
+      <view class="album-cover">
+        <image wx:if="{{item.coverUrl}}" src="{{item.coverUrl}}" mode="aspectFill" class="cover-img"/>
+        <view wx:else class="cover-placeholder"><text class="cover-mark">册</text></view>
+        <view class="album-count-badge">{{item.photoCount || 0}} 张</view>
+      </view>
+      <view class="album-info">
+        <text class="album-name ellipsis">{{item.name}}</text>
+        <text class="album-count">{{item.description || '点击查看这本相册里的全部照片。'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="showAdd"><text class="fab-icon">+</text></view>
+</view>
+
+<van-popup show="{{showAddPopup}}" round position="bottom" custom-style="height:50%" bind:close="closeAdd">
+  <view class="popup-wrap">
+    <view class="popup-header flex-between">
+      <view>
+        <text class="popup-title">新建相册</text>
+        <text class="popup-subtitle">给一组照片一个更清晰的名字。</text>
+      </view>
+      <van-icon name="cross" bindtap="closeAdd"/>
+    </view>
+    <van-field label="相册名称" value="{{addForm.name}}" placeholder="给相册起个名字" bind:input="onNameInput"/>
+    <van-field label="简介" value="{{addForm.description}}" placeholder="相册描述（可选）" bind:input="onDescInput"/>
+    <van-button type="primary" round block class="btn-gradient mt-20" bindtap="submitAdd">创建相册</van-button>
+  </view>
+</van-popup>
+<van-toast id="van-toast"/>

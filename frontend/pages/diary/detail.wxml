@@ -1,0 +1,29 @@
+<view class="page-shell article-page" wx:if="{{diary}}">
+  <view class="page-top">
+    <text class="page-kicker">Diary Detail</text>
+    <text class="page-heading">{{diary.title || '日记详情'}}</text>
+    <text class="page-subtitle">把一天完整展开，像读一篇留存下来的短文。</text>
+  </view>
+
+  <view class="article-card card">
+    <view class="detail-header flex-between">
+      <view class="mood-tag mood-{{diary.mood}}">{{diary.moodText}}</view>
+      <text class="detail-date">{{diary.diaryDate}}</text>
+    </view>
+    <text wx:if="{{diary.title}}" class="detail-title">{{diary.title}}</text>
+    <text class="detail-content">{{diary.content}}</text>
+    <view class="image-grid" wx:if="{{diary.images && diary.images.length > 0}}">
+      <image wx:for="{{diary.images}}" wx:key="index" src="{{item}}" mode="aspectFill" class="grid-img" bindtap="previewImage" data-url="{{item}}"/>
+    </view>
+    <view class="author-row">
+      <view class="author-meta">
+        <image class="avatar rounded-full" src="{{diary.userAvatar || '/images/default-avatar.png'}}" mode="aspectFill"/>
+        <text class="author-name">{{diary.userName || '我'}}</text>
+      </view>
+      <text wx:if="{{diary.isPrivate}}" class="private-tag">私密内容</text>
+    </view>
+  </view>
+  <van-button type="danger" plain round block class="delete-btn" bindtap="deleteDiary">删除日记</van-button>
+</view>
+<view wx:if="{{loading}}" class="loading-wrap"><van-loading size="40px" color="#bb775b"/></view>
+<van-toast id="van-toast"/>

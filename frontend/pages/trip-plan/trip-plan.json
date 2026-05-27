@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "旅行规划",
+  "usingComponents": {
+    "van-field": "/components/vant-weapp/field/index",
+    "van-button": "/components/vant-weapp/button/index",
+    "van-popup": "/components/vant-weapp/popup/index",
+    "van-datetime-picker": "/components/vant-weapp/datetime-picker/index",
+    "van-tag": "/components/vant-weapp/tag/index",
+    "van-loading": "/components/vant-weapp/loading/index",
+    "van-steps": "/components/vant-weapp/steps/index",
+    "van-icon": "/components/vant-weapp/icon/index",
+    "van-toast": "/components/vant-weapp/toast/index"
+  }
+}

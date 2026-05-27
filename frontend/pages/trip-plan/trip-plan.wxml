@@ -1,0 +1,194 @@
+<view class="page-shell trip-page">
+  <!-- 输入表单 -->
+  <view class="card form-card fade-in">
+    <text class="page-kicker">Trip Planner</text>
+    <text class="form-title">AI 旅行行程规划</text>
+    <text class="form-subtitle">告诉 AI 你的计划，让它为你安排一段舒适的旅程</text>
+
+    <view class="form-grid">
+      <view class="form-row">
+        <view class="form-field">
+          <text class="field-label">出发城市</text>
+          <input class="field-input" placeholder="如：长沙" value="{{fromCity}}" bindinput="onFromCityInput" />
+        </view>
+        <view class="form-field">
+          <text class="field-label">目的地</text>
+          <input class="field-input" placeholder="如：武汉" value="{{toCity}}" bindinput="onToCityInput" />
+        </view>
+      </view>
+
+      <view class="form-row">
+        <view class="form-field" bindtap="showStartPicker">
+          <text class="field-label">出发日期</text>
+          <view class="field-input picker-input {{startDate ? '' : 'placeholder'}}">
+            <text>{{startDate || '选择日期'}}</text>
+            <van-icon name="arrow" size="28rpx" color="#a59487" />
+          </view>
+        </view>
+        <view class="form-field" bindtap="showEndPicker">
+          <text class="field-label">返回日期</text>
+          <view class="field-input picker-input {{endDate ? '' : 'placeholder'}}">
+            <text>{{endDate || '选择日期'}}</text>
+            <van-icon name="arrow" size="28rpx" color="#a59487" />
+          </view>
+        </view>
+      </view>
+
+      <view class="form-field full">
+        <text class="field-label">旅行偏好（可多选）</text>
+        <view class="tag-row">
+          <view
+            wx:for="{{preferenceOptions}}"
+            wx:key="*this"
+            class="pref-tag {{prefSelected[item] ? 'active' : ''}}"
+            bindtap="togglePreference"
+            data-value="{{item}}"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <view class="form-field full">
+        <text class="field-label">预算等级</text>
+        <view class="tag-row">
+          <view
+            wx:for="{{budgetOptions}}"
+            wx:key="*this"
+            class="budget-tag {{budget === item ? 'active' : ''}}"
+            bindtap="selectBudget"
+            data-value="{{item}}"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <view class="form-field full">
+        <text class="field-label">其他需求（可选）</text>
+        <textarea class="field-textarea" placeholder="如：想去看海、带小朋友、需要无障碍路线..." value="{{customRequest}}" bindinput="onCustomRequestInput" maxlength="200" auto-height />
+      </view>
+    </view>
+
+    <van-button
+      type="primary"
+      round
+      block
+      class="btn-gradient generate-btn"
+      loading="{{generating}}"
+      loading-text="提交中..."
+      disabled="{{generating}}"
+      bindtap="generate"
+    >
+      {{generating ? '' : '生成行程'}}
+    </van-button>
+  </view>
+
+  <!-- 当前查看的行程详情 -->
+  <block wx:if="{{viewingPlan && viewingPlan.result}}">
+    <view class="card result-header fade-in">
+      <text class="result-title">{{viewingPlan.result.title}}</text>
+      <text class="result-summary">{{viewingPlan.result.summary}}</text>
+    </view>
+
+    <view class="day-tabs" wx:if="{{viewingPlan.result.days && viewingPlan.result.days.length > 1}}">
+      <view
+        wx:for="{{viewingPlan.result.days}}"
+        wx:key="date"
+        class="day-tab {{activeDay === index ? 'active' : ''}}"
+        bindtap="onDayTabChange"
+        data-index="{{index}}"
+      >
+        <text class="day-tab-label">Day {{index + 1}}</text>
+        <text class="day-tab-date">{{item.date}}</text>
+      </view>
+    </view>
+
+    <block wx:if="{{viewingPlan.result.days && viewingPlan.result.days.length > 0}}">
+      <view class="card day-card fade-in" wx:for="{{viewingPlan.result.days}}" wx:key="date" wx:if="{{activeDay === index}}">
+        <view class="day-weather">
+          <view class="weather-main">
+            <van-icon name="cloud-o" size="44rpx" color="#bb775b" />
+            <text class="weather-text">{{item.weather}}</text>
+          </view>
+          <view class="weather-detail">
+            <text class="weather-temp" wx:if="{{item.tempRange}}">{{item.tempRange}}</text>
+            <text class="weather-tip" wx:if="{{item.weatherTip}}">{{item.weatherTip}}</text>
+          </view>
+        </view>
+
+        <view class="timeline">
+          <view class="timeline-item" wx:for="{{item.items}}" wx:for-item="plan" wx:key="title">
+            <view class="timeline-dot-wrap">
+              <view class="timeline-dot"></view>
+              <view class="timeline-line" wx:if="{{index < item.items.length - 1}}"></view>
+            </view>
+            <view class="timeline-content">
+              <view class="timeline-header">
+                <text class="timeline-time">{{plan.time}}</text>
+                <van-icon name="{{plan.typeIcon}}" size="28rpx" color="#bb775b" />
+                <text class="timeline-type">{{plan.type}}</text>
+              </view>
+              <text class="timeline-title">{{plan.title}}</text>
+              <text class="timeline-desc" wx:if="{{plan.description}}">{{plan.description}}</text>
+              <view class="timeline-tip" wx:if="{{plan.tip}}">
+                <van-icon name="info-o" size="24rpx" color="#bb775b" />
+                <text>{{plan.tip}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view class="card tips-card fade-in" wx:if="{{viewingPlan.result.tips && viewingPlan.result.tips.length > 0}}">
+      <text class="tips-title">出行贴士</text>
+      <view class="tip-item" wx:for="{{viewingPlan.result.tips}}" wx:key="*this">
+        <van-icon name="passed" size="28rpx" color="#bb775b" />
+        <text class="tip-text">{{item}}</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- 历史行程列表 -->
+  <view class="card history-card fade-in" wx:if="{{plans.length > 0}}" style="animation-delay: 0.08s">
+    <text class="section-title">历史行程</text>
+    <view class="history-list">
+      <view class="history-item {{item.statusClass}}" wx:for="{{plans}}" wx:key="id">
+        <view class="history-main" bindtap="viewPlan" data-id="{{item.id}}">
+          <view class="history-left">
+            <van-icon name="{{item.statusIcon}}" size="36rpx" color="{{item.status === 1 ? '#bb775b' : item.status === 0 ? '#e6a77a' : '#ccc'}}" />
+          </view>
+          <view class="history-info">
+            <text class="history-route">{{item.route}}</text>
+            <text class="history-date">{{item.dateRange}}</text>
+            <text class="history-status {{item.statusClass}}">{{item.statusText}}</text>
+          </view>
+          <van-icon name="arrow" size="28rpx" color="#ccc" />
+        </view>
+        <view class="history-delete" catchtap="deletePlan" data-id="{{item.id}}">
+          <van-icon name="delete-o" size="32rpx" color="#ccc" />
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 日期选择弹窗 -->
+<van-popup show="{{showStartPicker}}" round position="bottom" bind:close="closeStartPicker">
+  <van-datetime-picker
+    type="date"
+    value="{{pickerDate}}"
+    min-date="{{minDate}}"
+    bind:confirm="onStartDateConfirm"
+    bind:cancel="closeStartPicker"
+  />
+</van-popup>
+
+<van-popup show="{{showEndPicker}}" round position="bottom" bind:close="closeEndPicker">
+  <van-datetime-picker
+    type="date"
+    value="{{pickerDate}}"
+    min-date="{{minDate}}"
+    bind:confirm="onEndDateConfirm"
+    bind:cancel="closeEndPicker"
+  />
+</van-popup>
+
+<van-toast id="van-toast" />

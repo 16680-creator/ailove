@@ -1,0 +1,87 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/menu/menu",
+    "pages/menu-detail/menu-detail",
+    "pages/diary/diary",
+    "pages/diary/detail",
+    "pages/album/album",
+    "pages/album/photos",
+    "pages/wish/wish",
+    "pages/wish/detail",
+    "pages/period/period",
+    "pages/trip-plan/trip-plan",
+    "pages/profile/profile",
+    "pages/register/register"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fbf4eb",
+    "navigationBarTitleText": "爱在朝夕",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f7efe5"
+  },
+  "tabBar": {
+    "color": "#8e7b6d",
+    "selectedColor": "#bb775b",
+    "backgroundColor": "#fff9f2",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tabbar/home.png",
+        "selectedIconPath": "images/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/diary/diary",
+        "text": "日记",
+        "iconPath": "images/tabbar/diary.png",
+        "selectedIconPath": "images/tabbar/diary-active.png"
+      },
+      {
+        "pagePath": "pages/album/album",
+        "text": "相册",
+        "iconPath": "images/tabbar/album.png",
+        "selectedIconPath": "images/tabbar/album-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tabbar/profile.png",
+        "selectedIconPath": "images/tabbar/profile-active.png"
+      }
+    ]
+  },
+  "usingComponents": {
+    "van-button": "/components/vant-weapp/button/index",
+    "van-cell": "/components/vant-weapp/cell/index",
+    "van-cell-group": "/components/vant-weapp/cell-group/index",
+    "van-icon": "/components/vant-weapp/icon/index",
+    "van-image": "/components/vant-weapp/image/index",
+    "van-loading": "/components/vant-weapp/loading/index",
+    "van-nav-bar": "/components/vant-weapp/nav-bar/index",
+    "van-notice-bar": "/components/vant-weapp/notice-bar/index",
+    "van-popup": "/components/vant-weapp/popup/index",
+    "van-toast": "/components/vant-weapp/toast/index",
+    "van-dialog": "/components/vant-weapp/dialog/index",
+    "van-field": "/components/vant-weapp/field/index",
+    "van-uploader": "/components/vant-weapp/uploader/index",
+    "van-datetime-picker": "/components/vant-weapp/datetime-picker/index",
+    "van-picker": "/components/vant-weapp/picker/index",
+    "van-action-sheet": "/components/vant-weapp/action-sheet/index",
+    "van-tag": "/components/vant-weapp/tag/index",
+    "van-progress": "/components/vant-weapp/progress/index",
+    "van-steps": "/components/vant-weapp/steps/index",
+    "van-calendar": "/components/vant-weapp/calendar/index",
+    "van-empty": "/components/vant-weapp/empty/index",
+    "van-grid": "/components/vant-weapp/grid/index",
+    "van-grid-item": "/components/vant-weapp/grid-item/index",
+    "van-card": "/components/vant-weapp/card/index",
+    "van-skeleton": "/components/vant-weapp/skeleton/index",
+    "van-swipe-cell": "/components/vant-weapp/swipe-cell/index",
+    "van-tabs": "/components/vant-weapp/tabs/index",
+    "van-tab": "/components/vant-weapp/tab/index"
+  },
+  "sitemapLocation": "sitemap.json"
+}

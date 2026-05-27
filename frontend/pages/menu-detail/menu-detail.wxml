@@ -1,0 +1,65 @@
+<view class="page-shell">
+  <!-- 加载中 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <van-loading type="spinner" size="36px" color="#bb775b" />
+  </view>
+
+  <block wx:if="{{dish && !loading}}">
+    <!-- 菜品图片 -->
+    <view class="dish-hero">
+      <image
+        src="{{dish.imageUrl || '/images/default-food.png'}}"
+        mode="aspectFill"
+        class="hero-img"
+      />
+      <view class="hero-overlay">
+        <text class="hero-name">{{dish.name}}</text>
+        <view class="hero-tags">
+          <text class="hero-tag" wx:if="{{dish.category}}">{{categoryNames[dish.category]}}</text>
+          <text class="hero-tag" wx:if="{{dish.cookTime}}">{{dish.cookTime}}分钟</text>
+          <text class="hero-tag" wx:if="{{dish.difficulty}}">
+            <text wx:for="{{dish.difficulty}}" wx:key="*this">⭐</text>
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 菜品描述 -->
+    <view class="section" wx:if="{{dish.description}}">
+      <text class="section-title">简介</text>
+      <text class="desc-text">{{dish.description}}</text>
+    </view>
+
+    <!-- AI 做法 -->
+    <view class="section recipe-section">
+      <view class="section-header">
+        <text class="section-title">做法</text>
+        <view class="regen-btn" bindtap="regenerateRecipe" wx:if="{{!recipeLoading}}">
+          <text>重新生成</text>
+        </view>
+      </view>
+
+      <!-- 做法加载中 -->
+      <view class="recipe-loading" wx:if="{{recipeLoading}}">
+        <van-loading type="spinner" size="24px" color="#bb775b" />
+        <text class="recipe-loading-text">AI 正在为你生成做法...</text>
+      </view>
+
+      <!-- 有做法 -->
+      <view class="recipe-content" wx:elif="{{dish.recipe}}">
+        <text class="recipe-text">{{dish.recipe}}</text>
+      </view>
+
+      <!-- 无做法 -->
+      <view class="recipe-empty" wx:else>
+        <text class="recipe-empty-icon">食</text>
+        <text class="recipe-empty-text">暂无做法</text>
+        <view class="gen-btn" bindtap="regenerateRecipe">
+          <text>AI 生成做法</text>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
+
+<van-toast id="van-toast" />

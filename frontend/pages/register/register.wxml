@@ -1,0 +1,67 @@
+<view class="page-shell register-page">
+  <view class="page-top">
+    <text class="page-kicker">Join Us</text>
+    <text class="page-heading">创建账号</text>
+    <text class="page-subtitle">注册一个新账号，开始记录你们的故事。</text>
+  </view>
+
+  <view class="form-card card">
+    <van-field
+      label="登录账号"
+      value="{{form.loginName}}"
+      placeholder="字母、数字或下划线，4-32位"
+      required
+      bind:input="onLoginNameInput"
+    />
+    <van-field
+      label="昵称"
+      value="{{form.nickname}}"
+      placeholder="给自己取个名字"
+      required
+      bind:input="onNicknameInput"
+    />
+    <van-field
+      label="密码"
+      value="{{form.password}}"
+      placeholder="6-32位密码"
+      type="password"
+      required
+      bind:input="onPasswordInput"
+    />
+    <van-field
+      label="确认密码"
+      value="{{form.confirmPassword}}"
+      placeholder="再输入一次密码"
+      type="password"
+      required
+      bind:input="onConfirmPasswordInput"
+    />
+    <van-field
+      label="手机号"
+      value="{{form.phone}}"
+      placeholder="选填，用于找回密码"
+      type="number"
+      bind:input="onPhoneInput"
+    />
+  </view>
+
+  <view class="btn-group">
+    <van-button
+      type="primary"
+      round
+      block
+      class="btn-gradient"
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+      bindtap="submitRegister"
+    >注册</van-button>
+    <van-button
+      type="default"
+      round
+      block
+      class="mt-20"
+      bindtap="goLogin"
+    >已有账号？去登录</van-button>
+  </view>
+</view>
+<van-toast id="van-toast"/>
