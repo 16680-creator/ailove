@@ -1,6 +1,11 @@
 import { Client } from 'ssh2';
 
-const CONFIG = { host: '123.60.31.79', port: 22, username: 'root', password: 'Yxw172707' };
+const CONFIG = {
+  host: process.env.DEPLOY_HOST || '',
+  port: parseInt(process.env.DEPLOY_PORT || '22', 10),
+  username: process.env.DEPLOY_USERNAME || 'root',
+  password: process.env.DEPLOY_PASSWORD || ''
+};
 
 function sshExec(conn, cmd) {
   return new Promise((resolve, reject) => {

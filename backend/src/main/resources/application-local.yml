@@ -40,7 +40,7 @@ mybatis-plus:
 ai:
   enabled: ${AI_ENABLED:true}
   api-url: ${AI_API_URL:https://api.minimax.chat/v1/text/chatcompletion_v2}
-  api-key: ${AI_API_KEY:sk-cp-yGKGDZqjcLYQrYjpPQj-fUUHcLHv_iox2XbgbwCSDJ6h4PvLVoxwJpwH4T47BsEXsU1eNygBtFg1Q07Og2mvD_kW43_WiLEDpsMv5nSUzxAMGH9DxvvUjn8}
+  api-key: ${AI_API_KEY:}
   model: ${AI_MODEL:MiniMax-M2.7}
   timeout: ${AI_TIMEOUT:300000}
 

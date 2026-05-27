@@ -14,7 +14,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret:aiLoveDailySecretKey2024}")
+    @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.expiration:2592000}")

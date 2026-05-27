@@ -5,7 +5,7 @@ App({
   globalData: {
     userInfo: null,
     token: null,
-    baseUrl: 'http://123.60.31.79:8080/api',
+    baseUrl: 'http://your-server:8080/api',
     // 开发模式：true=使用测试账号登录，false=使用真实微信登录
     devMode: true,
     devUserId: 2,

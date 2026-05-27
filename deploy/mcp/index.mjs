@@ -31,7 +31,7 @@ const STOP_SCRIPT = resolve(PROJECT_ROOT, "deploy/stop-backend.sh");
 
 // Default config
 const DEFAULTS = {
-  host: process.env.DEPLOY_HOST || "123.60.31.79",
+  host: process.env.DEPLOY_HOST || "",
   port: parseInt(process.env.DEPLOY_PORT || "22", 10),
   username: process.env.DEPLOY_USERNAME || "root",
   password: process.env.DEPLOY_PASSWORD || "",
@@ -130,11 +130,11 @@ MYSQL_HOST=${process.env.MYSQL_HOST || "127.0.0.1"}
 MYSQL_PORT=${process.env.MYSQL_PORT || "3306"}
 MYSQL_DATABASE=${process.env.MYSQL_DATABASE || "ai_love_daily"}
 MYSQL_USERNAME=${process.env.MYSQL_USERNAME || "yexw"}
-MYSQL_PASSWORD=${process.env.MYSQL_PASSWORD || "Yxw72707"}
+MYSQL_PASSWORD=${process.env.MYSQL_PASSWORD || ""}
 
 REDIS_HOST=${process.env.REDIS_HOST || "127.0.0.1"}
 REDIS_PORT=${process.env.REDIS_PORT || "6379"}
-REDIS_PASSWORD=${process.env.REDIS_PASSWORD || "AiLoveDailyRedis!2026#9rV"}
+REDIS_PASSWORD=${process.env.REDIS_PASSWORD || ""}
 REDIS_DATABASE=${process.env.REDIS_DATABASE || "0"}
 
 FILE_UPLOAD_PATH=/root/project/data/uploads
@@ -348,7 +348,7 @@ server.tool(
   "deploy",
   "Deploy the ai-love-daily backend to a remote server. Builds the jar, uploads it, configures .env, and starts the service.",
   {
-    host: z.string().optional().describe("Remote host IP (default from .env or 123.60.31.79)"),
+    host: z.string().optional().describe("Remote host IP (default from .env)"),
     port: z.number().optional().describe("SSH port (default 22)"),
     username: z.string().optional().describe("SSH username (default root)"),
     password: z.string().optional().describe("SSH password"),

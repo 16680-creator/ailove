@@ -40,7 +40,7 @@ wx:
   secret: ${WX_SECRET:}
 
 jwt:
-  secret: ${JWT_SECRET:aiLoveDailySecretKey2024}
+  secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:2592000}
 
 file:

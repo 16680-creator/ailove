@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 spring:
   application:
@@ -7,9 +7,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://123.60.31.79:3306/ai_love_daily?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: yexw
-    password: Yxw72707
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:ai_love_daily}?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:}
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -18,10 +18,10 @@ spring:
       connection-timeout: 30000
 
   redis:
-    host: 123.60.31.79
-    port: 6379
-    password: "AiLoveDailyRedis!2026#9rV"
-    database: 0
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: ${REDIS_DATABASE:0}
     timeout: 3000ms
     lettuce:
       pool:
@@ -42,18 +42,18 @@ spring:
     time-zone: Asia/Shanghai
 
 wx:
-  appid: wx_test_appid
-  secret: wx_test_secret
+  appid: ${WX_APPID:}
+  secret: ${WX_SECRET:}
 
 jwt:
-  secret: aiLoveDailySecretKey2024
-  expiration: 2592000
+  secret: ${JWT_SECRET:}
+  expiration: ${JWT_EXPIRATION:2592000}
 
 file:
   upload:
     path: ${FILE_UPLOAD_PATH:${user.dir}/uploads}
   access:
-    url: /uploads
+    url: ${FILE_ACCESS_URL:/uploads}
 
 mybatis-plus:
   configuration:
@@ -72,8 +72,8 @@ knife4j:
   enable: true
 
 ai:
-  enabled: ${AI_ENABLED:true}
+  enabled: ${AI_ENABLED:false}
   api-url: ${AI_API_URL:https://api.minimax.chat/v1/text/chatcompletion_v2}
-  api-key: ${AI_API_KEY:sk-cp-yGKGDZqjcLYQrYjpPQj-fUUHcLHv_iox2XbgbwCSDJ6h4PvLVoxwJpwH4T47BsEXsU1eNygBtFg1Q07Og2mvD_kW43_WiLEDpsMv5nSUzxAMGH9DxvvUjn8}
+  api-key: ${AI_API_KEY:}
   model: ${AI_MODEL:MiniMax-M2.7}
   timeout: ${AI_TIMEOUT:300000}
