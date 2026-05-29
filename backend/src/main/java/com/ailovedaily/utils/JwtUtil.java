@@ -1,10 +1,16 @@
 package com.ailovedaily.utils;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 /**
@@ -28,11 +34,11 @@ public class JwtUtil {
         Date expiryDate = new Date(now.getTime() + expiration * 1000);
 
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
+                .subject(String.valueOf(userId))
                 .claim("openid", openid)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSigningKey(), Jwts.SIG.HS512)
                 .compact();
     }
 
@@ -41,9 +47,10 @@ public class JwtUtil {
      */
     public Claims parseToken(String token) {
         return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     /**
@@ -51,7 +58,7 @@ public class JwtUtil {
      */
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
             return true;
         } catch (SignatureException e) {
             log.error("Invalid JWT signature");
@@ -84,6 +91,22 @@ public class JwtUtil {
             return claims.getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
             return true;
+        }
+    }
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = secret == null ? new byte[0] : secret.getBytes(StandardCharsets.UTF_8);
+        if (keyBytes.length < 64) {
+            keyBytes = sha512(keyBytes);
+        }
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private byte[] sha512(byte[] input) {
+        try {
+            return MessageDigest.getInstance("SHA-512").digest(input);
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-512 algorithm is unavailable", exception);
         }
     }
 }

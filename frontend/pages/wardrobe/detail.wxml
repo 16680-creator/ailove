@@ -1,0 +1,132 @@
+<view class="page-shell detail-page">
+  <view wx:if="{{loading}}" class="detail-loading card">
+    <van-loading color="#bb775b" size="40rpx">正在读取衣物...</van-loading>
+  </view>
+
+  <block wx:if="{{item && !loading}}">
+    <view class="detail-hero">
+      <image wx:if="{{item.displayImageUrl}}" class="hero-image" src="{{item.displayImageUrl}}" mode="aspectFill" />
+      <view wx:else class="hero-placeholder"><text>衣</text></view>
+      <view class="hero-shade"></view>
+      <view class="back-btn" bindtap="goBack">
+        <van-icon name="arrow-left" size="34rpx" color="#fff" />
+      </view>
+      <view class="hero-copy">
+        <text class="hero-title ellipsis">{{item.displayName}}</text>
+        <text class="hero-meta ellipsis">{{item.categoryLabel}} · {{item.color || '未填颜色'}} · {{item.style || '未填风格'}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{item.aiRecognized === false}}" class="recognize-alert card">
+      <view class="alert-copy">
+        <text class="alert-title">AI 识别未完成</text>
+        <text class="alert-text">可以手动补充属性，或重新识别这张衣物照片。</text>
+      </view>
+      <button class="alert-btn" bindtap="recognizeAgain">重新识别</button>
+    </view>
+
+    <view class="attr-card card">
+      <view class="section-head">
+        <text class="section-title">AI 属性</text>
+        <text class="section-link" bindtap="enterEdit">编辑</text>
+      </view>
+      <van-cell-group border="{{false}}">
+        <van-cell title="分类" value="{{item.categoryLabel}}" is-link bindtap="enterEdit" />
+        <van-cell title="子类型" value="{{item.subType || '未填写'}}" is-link bindtap="enterEdit" />
+        <van-cell title="颜色" value="{{item.color || '未填写'}}" is-link bindtap="enterEdit" />
+        <van-cell title="风格" value="{{item.style || '未填写'}}" is-link bindtap="enterEdit" />
+        <van-cell title="季节" value="{{item.seasonText}}" is-link bindtap="enterEdit" />
+        <van-cell title="场合" value="{{item.occasionText}}" is-link bindtap="enterEdit" />
+        <van-cell title="标签" value="{{item.tagsText}}" is-link bindtap="enterEdit" />
+      </van-cell-group>
+    </view>
+  </block>
+</view>
+
+<view wx:if="{{item && !loading}}" class="detail-actions safe-area-bottom">
+  <button class="action-btn" bindtap="toggleFavorite">
+    <van-icon name="{{item.favorite ? 'star' : 'star-o'}}" size="32rpx" color="{{item.favorite ? '#bb775b' : '#7f5342'}}" />
+    <text>{{item.favorite ? '已收藏' : '收藏'}}</text>
+  </button>
+  <button class="action-btn danger" bindtap="removeItem">
+    <van-icon name="delete-o" size="32rpx" color="#b65f58" />
+    <text>删除</text>
+  </button>
+  <button class="action-btn primary" bindtap="addToOutfit">
+    <van-icon name="plus" size="32rpx" color="#fff" />
+    <text>加入搭配</text>
+  </button>
+</view>
+
+<van-popup show="{{editMode}}" round position="bottom" custom-style="height:82%" bind:close="closeEdit">
+  <view class="edit-popup">
+    <view class="popup-header flex-between">
+      <view>
+        <text class="popup-title">确认衣物属性</text>
+        <text class="popup-subtitle">这些字段会参与 AI 搭配生成。</text>
+      </view>
+      <van-icon name="cross" size="34rpx" color="#7f5342" bindtap="closeEdit" />
+    </view>
+
+    <view class="edit-block">
+      <text class="edit-label">分类</text>
+      <view class="chip-grid">
+        <view
+          wx:for="{{categoryEditOptions}}"
+          wx:key="code"
+          class="edit-chip {{item.active ? 'active' : ''}}"
+          data-code="{{item.code}}"
+          bindtap="selectCategory"
+        >
+          {{item.name}}
+        </view>
+      </view>
+    </view>
+
+    <van-field label="子类型" value="{{editForm.subType}}" placeholder="如 T恤、牛仔裤" data-field="subType" bind:input="onTextInput" />
+    <van-field label="颜色" value="{{editForm.color}}" placeholder="如 白色、深蓝" data-field="color" bind:input="onTextInput" />
+    <van-field label="风格" value="{{editForm.style}}" placeholder="如 简约、复古" data-field="style" bind:input="onTextInput" />
+
+    <view class="edit-block">
+      <text class="edit-label">季节</text>
+      <view class="chip-grid">
+        <view
+          wx:for="{{seasonEditOptions}}"
+          wx:key="code"
+          class="edit-chip {{item.active ? 'active' : ''}}"
+          data-code="{{item.code}}"
+          bindtap="toggleSeason"
+        >
+          {{item.name}}
+        </view>
+      </view>
+    </view>
+
+    <view class="edit-block">
+      <text class="edit-label">场合</text>
+      <view class="chip-grid occasion-grid">
+        <view
+          wx:for="{{occasionEditOptions}}"
+          wx:key="code"
+          class="edit-chip {{item.active ? 'active' : ''}}"
+          data-code="{{item.code}}"
+          bindtap="toggleOccasion"
+        >
+          {{item.name}}
+        </view>
+      </view>
+    </view>
+
+    <van-field
+      label="自定义标签"
+      value="{{editForm.tagsInput}}"
+      placeholder="用顿号、逗号或空格分隔"
+      data-field="tagsInput"
+      bind:input="onTextInput"
+    />
+
+    <button class="save-btn" loading="{{saving}}" bindtap="saveEdit">保存属性</button>
+  </view>
+</van-popup>
+
+<van-toast id="van-toast" />

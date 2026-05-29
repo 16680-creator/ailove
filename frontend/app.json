@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/chat/chat",
     "pages/menu/menu",
     "pages/menu-detail/menu-detail",
     "pages/diary/diary",
@@ -12,7 +13,10 @@
     "pages/period/period",
     "pages/trip-plan/trip-plan",
     "pages/profile/profile",
-    "pages/register/register"
+    "pages/register/register",
+    "pages/wardrobe/wardrobe",
+    "pages/wardrobe/detail",
+    "pages/outfit/outfit"
   ],
   "window": {
     "backgroundTextStyle": "light",

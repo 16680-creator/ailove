@@ -16,16 +16,23 @@ spring:
       encoding: UTF-8
       continue-on-error: true
 
-  redis:
-    host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:6379}
-    password: ${REDIS_PASSWORD:}
-    database: 0
-    timeout: 3000ms
   data:
     redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 3000ms
       repositories:
         enabled: false
+
+  ai:
+    openai:
+      base-url: ${AI_BASE_URL:https://api.minimax.chat/v1}
+      api-key: ${AI_API_KEY:no-key}
+      chat:
+        options:
+          model: ${AI_MODEL:MiniMax-M2.7}
 
 file:
   upload:

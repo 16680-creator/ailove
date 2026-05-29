@@ -17,9 +17,8 @@ import com.ailovedaily.vo.AiQuoteVO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.ailovedaily.config.RedisHelper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -41,8 +40,7 @@ public class AiQuoteServiceImpl implements AiQuoteService {
     private final CoupleLinkMapper coupleLinkMapper;
     private final UserMapper userMapper;
     private final DailyQuoteMapper dailyQuoteMapper;
-    @Autowired(required = false)
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisHelper redisHelper;
 
     @Value("${ai.enabled:false}")
     private Boolean aiEnabled;
@@ -73,22 +71,14 @@ public class AiQuoteServiceImpl implements AiQuoteService {
         String cacheKey = AI_QUOTE_CACHE_PREFIX + coupleId + ":" + today;
 
         if (!force) {
-            try {
-                String cached = (String) redisTemplate.opsForValue().get(cacheKey);
-                if (StrUtil.isNotBlank(cached)) {
-                    return buildAiQuoteVO(cached, true);
-                }
-            } catch (Exception e) {
-                log.warn("Redis 缓存读取失败", e);
+            String cached = redisHelper.getString(cacheKey);
+            if (StrUtil.isNotBlank(cached)) {
+                return buildAiQuoteVO(cached, true);
             }
 
             DailyQuote dbQuote = dailyQuoteMapper.selectByCoupleAndDate(coupleId, today);
             if (dbQuote != null && StrUtil.isNotBlank(dbQuote.getContent())) {
-                try {
-                    redisTemplate.opsForValue().set(cacheKey, dbQuote.getContent(), 1, TimeUnit.DAYS);
-                } catch (Exception e) {
-                    log.warn("Redis 缓存写入失败", e);
-                }
+                redisHelper.set(cacheKey, dbQuote.getContent(), 1, TimeUnit.DAYS);
                 return buildAiQuoteVO(dbQuote.getContent(), true);
             }
         }
@@ -113,11 +103,7 @@ public class AiQuoteServiceImpl implements AiQuoteService {
             log.warn("保存 AI 情话到数据库失败", e);
         }
 
-        try {
-            redisTemplate.opsForValue().set(cacheKey, quote, 1, TimeUnit.DAYS);
-        } catch (Exception e) {
-            log.warn("Redis 缓存写入失败", e);
-        }
+        redisHelper.set(cacheKey, quote, 1, TimeUnit.DAYS);
 
         return buildAiQuoteVO(quote, true);
     }

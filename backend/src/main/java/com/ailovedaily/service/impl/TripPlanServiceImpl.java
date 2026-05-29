@@ -252,9 +252,6 @@ public class TripPlanServiceImpl implements TripPlanService {
             body.put("messages", messages);
             body.put("temperature", 0.7);
             body.put("max_tokens", 16000);
-            JSONObject reasoning = new JSONObject();
-            reasoning.set("effort", "low");
-            body.put("reasoning", reasoning);
 
             String jsonBody = JSONUtil.toJsonStr(body);
             log.info("调用 AI API 生成行程, model={}", aiModel);
@@ -274,7 +271,20 @@ public class TripPlanServiceImpl implements TripPlanService {
 
             int status = conn.getResponseCode();
             if (status != 200) {
-                log.error("AI API 调用失败: status={}", status);
+                java.io.InputStream errStream = conn.getErrorStream();
+                String errBody = "";
+                if (errStream != null) {
+                    java.io.BufferedReader ebr = new java.io.BufferedReader(
+                            new java.io.InputStreamReader(errStream, java.nio.charset.StandardCharsets.UTF_8));
+                    StringBuilder esb = new StringBuilder();
+                    String eline;
+                    while ((eline = ebr.readLine()) != null) {
+                        esb.append(eline);
+                    }
+                    ebr.close();
+                    errBody = esb.toString();
+                }
+                log.error("AI API 调用失败: status={}, body={}", status, errBody);
                 return null;
             }
 

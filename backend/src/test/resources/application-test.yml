@@ -1,0 +1,53 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test_wardrobe;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-h2.sql
+      data-locations: classpath:data-h2.sql
+      encoding: UTF-8
+      continue-on-error: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 3000ms
+      repositories:
+        enabled: false
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+ai:
+  enabled: false
+  api-url: https://api.minimax.chat/v1/text/chatcompletion_v2
+  api-key:
+  model: MiniMax-M2.7
+  timeout: 300000
+  vision:
+    api-url: https://api.minimax.chat/v1/text/chatcompletion_v2
+    model: abab-vision-pro
+  image:
+    api-url: https://api.minimax.chat/v1/image_generation
+    model: image-01
+    aspect-ratio: 3:4
+    daily-limit: 20
+
+file:
+  upload:
+    path: ${java.io.tmpdir}/test-uploads
+  access:
+    url: /uploads
+
+logging:
+  level:
+    com.ailovedaily: info

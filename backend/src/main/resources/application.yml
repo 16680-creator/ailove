@@ -17,17 +17,18 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 30000
 
-  redis:
-    host: ${REDIS_HOST:127.0.0.1}
-    port: ${REDIS_PORT:6379}
-    password: ${REDIS_PASSWORD:}
-    database: ${REDIS_DATABASE:0}
-    timeout: 3000ms
-    lettuce:
-      pool:
-        max-active: 8
-        max-idle: 8
-        min-idle: 0
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
 
   servlet:
     multipart:
@@ -40,6 +41,14 @@ spring:
       write-dates-as-timestamps: false
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
+
+  ai:
+    openai:
+      base-url: ${AI_BASE_URL:https://api.minimax.chat/v1}
+      api-key: ${AI_API_KEY:no-key}
+      chat:
+        options:
+          model: ${AI_MODEL:MiniMax-M2.7}
 
 wx:
   appid: ${WX_APPID:}
@@ -77,3 +86,11 @@ ai:
   api-key: ${AI_API_KEY:}
   model: ${AI_MODEL:MiniMax-M2.7}
   timeout: ${AI_TIMEOUT:300000}
+  vision:
+    api-url: ${AI_VISION_API_URL:https://api.minimax.chat/v1/text/chatcompletion_v2}
+    model: ${AI_VISION_MODEL:abab-vision-pro}
+  image:
+    api-url: ${AI_IMAGE_API_URL:https://api.minimax.chat/v1/image_generation}
+    model: ${AI_IMAGE_MODEL:image-01}
+    aspect-ratio: ${AI_IMAGE_ASPECT:3:4}
+    daily-limit: ${AI_IMAGE_DAILY_LIMIT:20}

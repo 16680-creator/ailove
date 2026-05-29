@@ -5,7 +5,7 @@ App({
   globalData: {
     userInfo: null,
     token: null,
-    baseUrl: 'http://your-server:8080/api',
+    baseUrl: 'http://localhost:8080/api',
     // 开发模式：true=使用测试账号登录，false=使用真实微信登录
     devMode: true,
     devUserId: 2,
@@ -20,6 +20,17 @@ App({
     if (token) {
       this.globalData.token = token;
       this.getUserInfo();
+      return;
+    }
+    // 开发模式：未登录时自动使用默认用户 dev-login，避免调用业务接口返回 401
+    if (this.globalData.devMode) {
+      this.devLogin((res) => {
+        if (res && res.success) {
+          this.getUserInfo();
+        } else {
+          console.warn('[devLogin] 自动登录失败，请确认后端已启动及 userId=' + this.globalData.devUserId + ' 存在', res && res.message);
+        }
+      });
     }
   },
 

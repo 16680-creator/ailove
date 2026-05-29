@@ -92,10 +92,20 @@
         <text class="entry-name">旅行规划</text>
         <text class="entry-meta">AI 生成行程安排</text>
       </view>
-      <view class="entry-item wide" bindtap="navigateTo" data-url="/pages/period/period">
+      <view class="entry-item" bindtap="navigateTo" data-url="/pages/wardrobe/wardrobe">
+        <text class="entry-mark">衣</text>
+        <text class="entry-name">智能衣橱</text>
+        <text class="entry-meta">{{quickStats.wardrobeCount || 0}} 件衣物</text>
+      </view>
+      <view class="entry-item" bindtap="navigateTo" data-url="/pages/period/period">
         <text class="entry-mark">周</text>
         <text class="entry-name">姨妈助手</text>
         <text class="entry-meta">记录周期节奏与提醒</text>
+      </view>
+      <view class="entry-item" bindtap="navigateTo" data-url="/pages/chat/chat">
+        <text class="entry-mark">聊</text>
+        <text class="entry-name">AI 陪伴</text>
+        <text class="entry-meta">文字和照片都能聊</text>
       </view>
     </view>
   </view>

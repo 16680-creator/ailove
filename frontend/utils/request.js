@@ -100,4 +100,22 @@ function fixUrl(url) {
   return origin + url;
 }
 
-module.exports = { request, uploadFile, fixUrl };
+const wardrobeApi = {
+  upload(filePath) { return uploadFile({ url: '/wardrobe/upload', filePath }); },
+  list(params) { return request({ url: '/wardrobe/list', data: params }); },
+  detail(id) { return request({ url: `/wardrobe/${id}` }); },
+  update(id, data) { return request({ url: `/wardrobe/${id}`, method: 'PUT', data }); },
+  remove(id) { return request({ url: `/wardrobe/${id}`, method: 'DELETE' }); },
+  favorite(id) { return request({ url: `/wardrobe/${id}/favorite`, method: 'POST' }); },
+  recognize(id) { return request({ url: `/wardrobe/${id}/recognize`, method: 'POST' }); }
+};
+
+const outfitApi = {
+  autoMatch(data) { return request({ url: '/outfit/auto-match', method: 'POST', data }); },
+  manual(data) { return request({ url: '/outfit/manual', method: 'POST', data }); },
+  list(params) { return request({ url: '/outfit/list', data: params }); },
+  detail(id) { return request({ url: `/outfit/${id}` }); },
+  remove(id) { return request({ url: `/outfit/${id}`, method: 'DELETE' }); }
+};
+
+module.exports = { request, uploadFile, fixUrl, wardrobeApi, outfitApi };

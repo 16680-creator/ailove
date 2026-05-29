@@ -21,10 +21,8 @@ import com.ailovedaily.vo.UserVO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.RedisConnectionFailureException;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.ailovedaily.config.RedisHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +43,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final CoupleLinkMapper coupleLinkMapper;
     private final JwtUtil jwtUtil;
-    @Autowired(required = false)
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisHelper redisHelper;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${wx.appid}")
@@ -112,13 +109,7 @@ public class UserServiceImpl implements UserService {
         userMapper.updateById(user);
 
         // 缓存session_key（用于解密用户信息）
-        try {
-            redisTemplate.opsForValue().set("session_key:" + user.getId(), sessionKey, 30, TimeUnit.DAYS);
-        } catch (RedisConnectionFailureException exception) {
-            log.warn("Redis 不可用，跳过 session_key 缓存: {}", exception.getMessage());
-        } catch (Exception exception) {
-            log.warn("缓存 session_key 失败", exception);
-        }
+        redisHelper.set("session_key:" + user.getId(), sessionKey, 30, TimeUnit.DAYS);
 
         return buildLoginResult(user, isNewUser);
     }

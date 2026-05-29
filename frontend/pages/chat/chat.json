@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "AI 陪伴",
+  "usingComponents": {
+    "van-icon": "/components/vant-weapp/icon/index",
+    "van-loading": "/components/vant-weapp/loading/index",
+    "van-empty": "/components/vant-weapp/empty/index",
+    "van-popup": "/components/vant-weapp/popup/index"
+  }
+}

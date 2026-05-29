@@ -1,0 +1,135 @@
+<view class="page-shell outfit-page">
+  <view class="page-top">
+    <text class="page-kicker">Outfit Lab</text>
+    <text class="page-heading">AI 搭配</text>
+    <text class="page-subtitle">输入场景，再让 AI 从衣橱里组合一套可落地的穿搭。</text>
+  </view>
+
+  <view class="prompt-card card">
+    <van-field
+      value="{{prompt}}"
+      type="textarea"
+      rows="4"
+      autosize
+      border="{{false}}"
+      placeholder="描述场合、温度、风格…"
+      bind:input="onPromptInput"
+    />
+    <button class="auto-btn" disabled="{{generating}}" bindtap="autoMatch">
+      <text class="bolt">⚡</text>
+      <text>AI 自动搭配</text>
+    </button>
+  </view>
+
+  <view class="selected-card card">
+    <view class="section-head">
+      <text class="section-title">已选衣物</text>
+      <view class="owner-switch">
+        <view class="owner-option {{!partnerView ? 'active' : ''}}" data-value="mine" bindtap="switchOwner">我的</view>
+        <view class="owner-option {{partnerView ? 'active' : ''}}" data-value="partner" bindtap="switchOwner">TA 的</view>
+      </view>
+    </view>
+
+    <view wx:if="{{selectedLoading}}" class="inline-loading">
+      <van-loading color="#bb775b" size="34rpx">正在读取衣物...</van-loading>
+    </view>
+
+    <scroll-view wx:elif="{{selectedItems.length > 0}}" scroll-x class="selected-scroll">
+      <view class="selected-strip">
+        <view
+          wx:for="{{selectedItems}}"
+          wx:key="id"
+          class="selected-item"
+          data-id="{{item.id}}"
+          bindtap="viewItemDetail"
+        >
+          <image wx:if="{{item.displayUrl}}" class="selected-img" src="{{item.displayUrl}}" mode="aspectFill" />
+          <view wx:else class="selected-placeholder"><text>衣</text></view>
+          <text class="selected-name ellipsis">{{item.displayName}}</text>
+          <view class="remove-dot" data-id="{{item.id}}" catchtap="removeSelected">
+            <van-icon name="cross" size="20rpx" color="#fff" />
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view wx:else class="selected-empty">
+      <text>还没有选入衣物</text>
+    </view>
+
+    <button class="manual-btn" disabled="{{generating}}" bindtap="manualMatch">手动生成搭配</button>
+  </view>
+
+  <view wx:if="{{result}}" class="result-card card">
+    <view class="section-head">
+      <text class="section-title">生成结果</text>
+      <text class="section-note">{{result.createTimeText}}</text>
+    </view>
+
+    <image wx:if="{{result.displayImageUrl}}" class="result-image" src="{{result.displayImageUrl}}" mode="aspectFill" />
+    <view wx:else class="result-placeholder">
+      <text>AI</text>
+    </view>
+
+    <view class="reason-box">
+      <text class="reason-title">{{result.displayTitle}}</text>
+      <text class="reason-text">{{result.reason || '暂无搭配理由'}}</text>
+    </view>
+
+    <scroll-view wx:if="{{result.items.length > 0}}" scroll-x class="used-scroll">
+      <view class="used-strip">
+        <view wx:for="{{result.items}}" wx:key="id" class="used-chip" data-id="{{item.id}}" bindtap="viewItemDetail">
+          <image wx:if="{{item.displayUrl}}" class="used-img" src="{{item.displayUrl}}" mode="aspectFill" />
+          <text class="used-name ellipsis">{{item.displayName}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <button class="save-result-btn" bindtap="saveResult">保存到我的搭配</button>
+  </view>
+
+  <view class="history-card card">
+    <view class="history-head" bindtap="toggleHistory">
+      <view>
+        <text class="section-title">历史搭配</text>
+        <text class="history-subtitle">最近 20 条生成记录</text>
+      </view>
+      <van-icon name="{{historyOpen ? 'arrow-up' : 'arrow-down'}}" size="34rpx" color="#7f5342" />
+    </view>
+
+    <block wx:if="{{historyOpen}}">
+      <view class="history-tools">
+        <text class="section-note">{{history.length}} 条记录</text>
+        <text class="section-link" bindtap="refreshHistory">刷新</text>
+      </view>
+
+      <view wx:if="{{historyLoading}}" class="inline-loading">
+        <van-loading color="#bb775b" size="34rpx">正在读取历史...</van-loading>
+      </view>
+
+      <view wx:elif="{{history.length === 0}}" class="history-empty">
+        <text>暂无历史搭配</text>
+      </view>
+
+      <view wx:else class="history-list">
+        <view
+          wx:for="{{history}}"
+          wx:key="id"
+          class="history-item"
+          data-index="{{index}}"
+          bindtap="selectHistory"
+        >
+          <image wx:if="{{item.displayImageUrl}}" class="history-cover" src="{{item.displayImageUrl}}" mode="aspectFill" />
+          <view wx:else class="history-cover history-cover-empty"><text>搭</text></view>
+          <view class="history-main">
+            <text class="history-title ellipsis">{{item.displayTitle}}</text>
+            <text class="history-time">{{item.createTimeText}}</text>
+            <text class="history-reason ellipsis-2">{{item.reason || '暂无搭配理由'}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+
+<van-toast id="van-toast" />

@@ -15,6 +15,7 @@ import com.ailovedaily.mapper.DiaryMapper;
 import com.ailovedaily.mapper.MenuItemMapper;
 import com.ailovedaily.mapper.PhotoMapper;
 import com.ailovedaily.mapper.UserMapper;
+import com.ailovedaily.mapper.WardrobeItemMapper;
 import com.ailovedaily.mapper.WishListMapper;
 import com.ailovedaily.service.AiQuoteService;
 import com.ailovedaily.service.HomeService;
@@ -27,9 +28,7 @@ import com.ailovedaily.vo.UserVO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.RedisConnectionFailureException;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.ailovedaily.config.RedisHelper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -57,8 +56,8 @@ public class HomeServiceImpl implements HomeService {
     private final WishListMapper wishListMapper;
     private final MenuItemMapper menuItemMapper;
     private final AiQuoteService aiQuoteService;
-    @Autowired(required = false)
-    private RedisTemplate<String, Object> redisTemplate;
+    private final WardrobeItemMapper wardrobeItemMapper;
+    private final RedisHelper redisHelper;
 
     @Override
     public HomeVO getHomeData(Long userId) {
@@ -112,6 +111,7 @@ public class HomeServiceImpl implements HomeService {
                     new LambdaQueryWrapper<WishList>()
                             .eq(WishList::getCoupleId, user.getCoupleId())
                             .eq(WishList::getStatus, 2)));
+            quickStats.put("wardrobeCount", wardrobeItemMapper.countByUser(userId));
             homeVO.setQuickStats(quickStats);
 
             List<Diary> diaries = diaryMapper.selectTimelineByCoupleId(user.getCoupleId(), 3);
@@ -183,28 +183,16 @@ public class HomeServiceImpl implements HomeService {
     public String getDailyQuote() {
         String cacheKey = "daily:quote:" + LocalDate.now();
 
-        try {
-            String cachedQuote = (String) redisTemplate.opsForValue().get(cacheKey);
-            if (cachedQuote != null) {
-                return cachedQuote;
-            }
-        } catch (RedisConnectionFailureException exception) {
-            log.warn("Redis 不可用，跳过每日情话缓存读取: {}", exception.getMessage());
-        } catch (Exception exception) {
-            log.warn("读取每日情话缓存失败", exception);
+        String cachedQuote = redisHelper.getString(cacheKey);
+        if (cachedQuote != null) {
+            return cachedQuote;
         }
 
         DailyQuote quote = dailyQuoteMapper.selectRandomByCategory(1);
         if (quote != null) {
             dailyQuoteMapper.incrementUseCount(quote.getId());
 
-            try {
-                redisTemplate.opsForValue().set(cacheKey, quote.getContent(), 1, TimeUnit.DAYS);
-            } catch (RedisConnectionFailureException exception) {
-                log.warn("Redis 不可用，跳过每日情话缓存写入: {}", exception.getMessage());
-            } catch (Exception exception) {
-                log.warn("写入每日情话缓存失败", exception);
-            }
+            redisHelper.set(cacheKey, quote.getContent(), 1, TimeUnit.DAYS);
 
             return quote.getContent();
         }

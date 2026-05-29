@@ -13,6 +13,7 @@
 .env.local
 .env.*.local
 **/.env
+application-dev.yml
 
 # Node
 node_modules/
@@ -42,3 +43,6 @@ frontend/miniprogram_npm/
 
 # Temp files
 ~$*
+.codex-tmp/
+*.mv.db
+*.trace.db

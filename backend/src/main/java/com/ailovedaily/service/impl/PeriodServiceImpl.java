@@ -18,8 +18,7 @@ import com.ailovedaily.vo.PeriodRecordVO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.ailovedaily.config.RedisHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,8 +39,7 @@ public class PeriodServiceImpl implements PeriodService {
     private final PeriodRecordMapper periodRecordMapper;
     private final PeriodDailyLogMapper periodDailyLogMapper;
     private final UserMapper userMapper;
-    @Autowired(required = false)
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisHelper redisHelper;
 
     private static final String PERIOD_INFO_CACHE_KEY = "period:info:";
     private static final long CACHE_EXPIRE_HOURS = 2;
@@ -133,13 +131,9 @@ public class PeriodServiceImpl implements PeriodService {
     public PeriodInfoVO getPeriodInfo(Long userId) {
         // 尝试从缓存获取
         String cacheKey = PERIOD_INFO_CACHE_KEY + userId;
-        try {
-            Object cached = redisTemplate.opsForValue().get(cacheKey);
-            if (cached instanceof PeriodInfoVO) {
-                return (PeriodInfoVO) cached;
-            }
-        } catch (Exception e) {
-            log.warn("Redis缓存读取失败，跳过缓存: {}", e.getMessage());
+        Object cached = redisHelper.get(cacheKey);
+        if (cached instanceof PeriodInfoVO) {
+            return (PeriodInfoVO) cached;
         }
 
         User user = userMapper.selectById(userId);
@@ -190,11 +184,7 @@ public class PeriodServiceImpl implements PeriodService {
         info.setRecentRecords(getRecentRecords(userId, 6));
 
         // 存入缓存
-        try {
-            redisTemplate.opsForValue().set(cacheKey, info, CACHE_EXPIRE_HOURS, TimeUnit.HOURS);
-        } catch (Exception e) {
-            log.warn("Redis缓存写入失败，跳过缓存: {}", e.getMessage());
-        }
+        redisHelper.set(cacheKey, info, CACHE_EXPIRE_HOURS, TimeUnit.HOURS);
 
         return info;
     }
@@ -341,11 +331,7 @@ public class PeriodServiceImpl implements PeriodService {
      */
     private void clearPeriodCache(Long userId) {
         String cacheKey = PERIOD_INFO_CACHE_KEY + userId;
-        try {
-            redisTemplate.delete(cacheKey);
-        } catch (Exception e) {
-            log.warn("Redis缓存清除失败，跳过: {}", e.getMessage());
-        }
+        redisHelper.delete(cacheKey);
     }
 
     private PeriodRecordVO convertToVO(PeriodRecord record) {

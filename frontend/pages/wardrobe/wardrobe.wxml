@@ -1,0 +1,91 @@
+<view class="page-shell wardrobe-page">
+  <view class="page-top wardrobe-top">
+    <text class="page-kicker">AI Wardrobe</text>
+    <text class="page-heading">智能衣橱</text>
+    <text class="page-subtitle">把衣物识别、筛选和搭配放在同一个入口里。</text>
+  </view>
+
+  <view class="filter-card card">
+    <van-tabs
+      active="{{activeTab}}"
+      color="#bb775b"
+      title-active-color="#34261e"
+      title-inactive-color="#8e7b6d"
+      line-width="36"
+      bind:change="onTabChange"
+    >
+      <van-tab wx:for="{{categories}}" wx:key="code" title="{{item.name}}"></van-tab>
+    </van-tabs>
+
+    <view class="filter-row">
+      <view class="season-chips">
+        <view
+          wx:for="{{seasons}}"
+          wx:key="code"
+          class="season-chip {{selectedSeason === item.code ? 'active' : ''}}"
+          data-code="{{item.code}}"
+          bindtap="selectSeason"
+        >
+          {{item.name}}
+        </view>
+      </view>
+      <view class="owner-switch">
+        <view class="owner-option {{!partnerView ? 'active' : ''}}" data-value="mine" bindtap="switchOwner">我的</view>
+        <view class="owner-option {{partnerView ? 'active' : ''}}" data-value="partner" bindtap="switchOwner">TA 的</view>
+      </view>
+    </view>
+  </view>
+
+  <van-skeleton title row="7" loading="{{loading && firstLoading}}">
+    <view wx:if="{{items.length === 0 && !loading}}" class="empty-wrap card">
+      <text class="empty-icon">衣</text>
+      <text class="empty-title">这一栏还没有衣物</text>
+      <text class="empty-text">添加一件衣物后，AI 会先识别分类和标签。</text>
+    </view>
+
+    <view wx:else class="wardrobe-grid">
+      <view
+        wx:for="{{items}}"
+        wx:key="id"
+        class="wardrobe-cell card {{item.selected ? 'selected' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="onItemTap"
+        bindlongpress="onItemLongPress"
+      >
+        <view class="thumb-box">
+          <image wx:if="{{item.displayUrl}}" class="wardrobe-thumb" src="{{item.displayUrl}}" mode="aspectFill" lazy-load />
+          <view wx:else class="thumb-placeholder"><text>衣</text></view>
+          <view wx:if="{{selectMode}}" class="select-dot {{item.selected ? 'checked' : ''}}">
+            <van-icon wx:if="{{item.selected}}" name="success" size="24rpx" color="#fff" />
+          </view>
+          <view wx:if="{{item.favorite}}" class="favorite-mark">
+            <van-icon name="star" size="24rpx" color="#fff" />
+          </view>
+        </view>
+        <view class="cell-info">
+          <text class="cell-title ellipsis">{{item.displayName}}</text>
+          <text class="cell-meta ellipsis">{{item.color || item.style || '未补充属性'}}</text>
+        </view>
+      </view>
+    </view>
+  </van-skeleton>
+
+  <view wx:if="{{loading && !firstLoading}}" class="loading-tip">正在刷新衣橱...</view>
+
+  <view class="fab wardrobe-fab" bindtap="chooseUpload">
+    <text class="fab-icon">+</text>
+  </view>
+</view>
+
+<view wx:if="{{selectMode}}" class="selection-bar safe-area-bottom">
+  <view class="selection-copy">
+    <text class="selection-title">已选 {{selectedIds.length}} 件</text>
+    <text class="selection-subtitle">选择上衣、下装和鞋履会更完整</text>
+  </view>
+  <view class="selection-actions">
+    <button class="plain-btn" bindtap="clearSelection">取消</button>
+    <button class="match-btn" bindtap="goOutfit">去搭配 ({{selectedIds.length}})</button>
+  </view>
+</view>
+
+<van-toast id="van-toast" />

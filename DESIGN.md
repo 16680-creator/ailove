@@ -38,6 +38,7 @@
 | 经期追踪 | 经期记录、每日打卡、周期预测、伴侣提醒 |
 | 旅行规划 | AI 生成个性化旅行行程 |
 | 每日情话 | AI 生成的情侣专属情话 |
+| 智能衣橱 | 上传衣物 → AI 视觉识别分类 → AI 文生图生成穿搭效果 |
 
 ### 1.3 目标用户
 
@@ -980,4 +981,94 @@ vim .env
 
 ---
 
-*本文档基于项目源码自动生成，涵盖后端 12 个 Controller、13 个 Entity、54 个 API 接口，前端 10 个页面，12 张数据库表的完整分析。*
+## 11. 智能衣橱模块 (Wardrobe & Outfit)
+
+### 11.1 模块概述
+
+智能衣橱模块允许用户上传日常衣物图片，由 MiniMax 视觉模型自动识别类型 / 季节 / 风格 / 颜色 / 适合场合，并按上衣 / 下装 / 外套 / 鞋子 / 包配饰分类入库；选中若干衣物或输入自然语言指令后，调用 MiniMax 文生图生成穿搭效果图，支持伴侣视角切换与历史搭配查看。
+
+### 11.2 数据库设计
+
+新增 4 张表（`sql/upgrade-wardrobe.sql`）：
+
+| 表名 | 说明 | 关键字段 |
+|------|------|----------|
+| `wardrobe_category` | 衣物分类字典 | `code` (top/bottom/coat/shoes/bag), `name`, `sort_order` |
+| `wardrobe_item` | 衣物条目 | `user_id`, `couple_id`, `category_code`, `image_url`, `thumb_url`, `sub_type`, `color`, `style`, `season` (JSON), `occasion` (JSON), `tags` (JSON), `ai_recognized`, `favorite` |
+| `outfit` | 穿搭记录 | `user_id`, `couple_id`, `prompt`, `match_mode` (auto/manual), `partner_view`, `ai_generated_image_url`, `description` |
+| `outfit_item` | 穿搭与衣物多对多 | `outfit_id`, `item_id` |
+
+### 11.3 后端实现
+
+- **Controller**：`WardrobeController` (8 接口) + `OutfitController` (5 接口)
+- **Service**：`WardrobeService` / `OutfitService` / `AiVisionService` / `AiImageService`
+- **AI 调用**：参照 `AiQuoteServiceImpl` 风格使用 Hutool HttpUtil + JSONUtil
+  - 视觉识别 → `ai.vision.model = abab-vision-pro`，返回 `{category, subType, color, style, season[], occasion[], tags[]}`
+  - 文生图 → `ai.image.model = image-01`，输入 prompt + 衣物列表描述，返回图片 URL
+- **限流**：每日生图次数 20 次，Redis key `outfit:gen:{userId}:{yyyyMMdd}`
+- **降级**：AI 调用失败时返回 `code=503` 或 `code=429`，前端展示对应文案
+
+### 11.4 API 接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/wardrobe/upload` | 上传衣物图片（multipart）+ AI 自动识别 |
+| GET  | `/api/wardrobe/list` | 列表，支持 `category` / `season` / `partnerView` 过滤 |
+| GET  | `/api/wardrobe/{id}` | 衣物详情 |
+| PUT  | `/api/wardrobe/{id}` | 编辑衣物属性 |
+| DELETE | `/api/wardrobe/{id}` | 删除衣物 |
+| POST | `/api/wardrobe/{id}/favorite` | 切换收藏状态 |
+| POST | `/api/wardrobe/{id}/recognize` | 重新触发 AI 识别 |
+| POST | `/api/outfit/auto-match` | 自然语言指令自动搭配 |
+| POST | `/api/outfit/manual` | 手动选择衣物生成搭配 |
+| GET  | `/api/outfit/list` | 历史搭配分页查询 |
+| GET  | `/api/outfit/{id}` | 搭配详情 |
+| DELETE | `/api/outfit/{id}` | 删除搭配 |
+
+### 11.5 前端实现
+
+- **新增页面**：`pages/wardrobe/wardrobe`、`pages/wardrobe/detail`、`pages/outfit/outfit`
+- **首页入口**：`pages/index/index.wxml` `entry-grid` 内追加「智能衣橱」卡片，展示 `quickStats.wardrobeCount`
+- **API 封装**：`utils/request.js` 新增 `wardrobeApi` / `outfitApi` 两个对象
+- **交互亮点**：
+  - 衣橱主页：tab 切换分类 + 季节筛选 + 长按多选 + 一键去搭配
+  - 衣物详情：编辑属性、收藏、删除、重新识别
+  - 穿搭页：自然语言输入 + 自动 / 手动两种生成模式 + 历史搭配抽屉
+
+### 11.6 配置扩展
+
+`application.yml` 新增 `ai.vision.*` 与 `ai.image.*` 子配置，所有敏感值通过环境变量注入：
+
+```yaml
+ai:
+  vision:
+    enabled: ${AI_VISION_ENABLED:true}
+    model: ${AI_VISION_MODEL:abab-vision-pro}
+    api-key: ${AI_VISION_API_KEY:${AI_API_KEY:}}
+    base-url: ${AI_VISION_BASE_URL:https://api.minimax.chat/v1}
+  image:
+    enabled: ${AI_IMAGE_ENABLED:true}
+    model: ${AI_IMAGE_MODEL:image-01}
+    api-key: ${AI_IMAGE_API_KEY:${AI_API_KEY:}}
+    base-url: ${AI_IMAGE_BASE_URL:https://api.minimax.chat/v1}
+    daily-limit: ${AI_IMAGE_DAILY_LIMIT:20}
+```
+
+### 11.7 多 Agent 协同开发记录
+
+本模块采用 **契约先行 + 按层切分** 的多 Agent 协同模式开发：
+
+| 角色 | 职责 | 写入边界 |
+|------|------|----------|
+| Qoder（统筹） | 接口契约、任务派发、合并校验、文档维护 | `.qoder/plans/`、`DESIGN.md` |
+| Claude Code | 后端全栈：DDL、Entity、Mapper、Service、Controller、配置扩展 | `backend/`、`sql/`、`deploy/.env.example` |
+| Codex CLI | 前端全栈：app.json 注册、API 封装、3 个页面、首页入口接入 | `frontend/` |
+
+关键产物：
+- `.qoder/plans/wardrobe-contract.md` —— 不可变跨层契约（DDL / API / VO / DTO）
+- `.qoder/plans/CLAUDE_TASK_BACKEND.md` —— Claude 后端任务包
+- `.qoder/plans/CODEX_TASK_FRONTEND.md` —— Codex 前端任务包
+
+---
+
+*本文档基于项目源码自动生成，涵盖后端 14 个 Controller、17 个 Entity、66 个 API 接口，前端 13 个页面，16 张数据库表的完整分析。*
